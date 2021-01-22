@@ -1,7 +1,11 @@
 # Projet_RMN_EMMA
 
 TODO :
-- [ ] Contacter l'encadrant
+- [x] Contacter l'encadrant
 - [ ] Apprendre à se servir de GitHub
 
-Doing some test don't mind me
+CHANGELOG :
+
+22/01/2021 : Updated README.md
+
+21/01/2021 : Project initialization
