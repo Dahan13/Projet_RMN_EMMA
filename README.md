@@ -13,3 +13,10 @@ CHANGELOG :
 21/01/2021 : Project initialization
 
 test
+- [X] Contacter l'encadrant
+- [ ] Apprendre à se servir de GitHub
+- [ ] Lire les documents donnés à propos de EMMA
+test de humbert
+
+
+TEST DE CORENTIN NOW 
