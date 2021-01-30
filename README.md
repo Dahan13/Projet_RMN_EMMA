@@ -5,3 +5,6 @@ TODO :
 - [x] Lire les documents initiaux fournis
 - [ ] Prendre connaissances des logiciels 
 - [ ] Apprendre à se servir de GitHub
+
+Documents partagés par S.V. :
+https://amubox.univ-amu.fr/s/JBeKHQjASpLYkoE
