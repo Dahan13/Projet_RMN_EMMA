@@ -26,11 +26,16 @@ def data_extractor(path):
                 imaginary_index = i - 3
             data.append(int(y))
 
-    real_data = np.array(data[:imaginary_index], dtype=np.int64)
-    imaginary_data = np.array(data[imaginary_index:], dtype=np.int64)
+    real_data = np.array(data[:imaginary_index], dtype=int)
+    imaginary_data = np.array(data[imaginary_index:], dtype=int)
 
-    return real_data, imaginary_data
+    # safeguard
+    assert len(real_data) == len(imaginary_data), "Data error : different number of real and imaginary parts."
+    # end safeguard
 
+    data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
+
+    return data
 
 def test_data():
     print(data_extractor(path_file))
