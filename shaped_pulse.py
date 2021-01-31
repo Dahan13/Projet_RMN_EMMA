@@ -3,7 +3,7 @@ import math
 import numpy as np
 import data_handling as dh
 
-path_file = r".\FILE_1_emma21_10010_FID_ANALOG.txt"
+path_file = 'FILE_1_emma21_10010_FID_ANALOG.txt'
 real, imaginary = dh.data_extractor(path_file)
 
 
@@ -12,7 +12,7 @@ def make_number_complex(part_real, part_img):
     # pour retourner np.array de modules et d'arguments (en degré)
 
     # safeguard
-    if len(part_real) != 0 and len(part_img) != 0:
+    if len(part_real) == 0 or len(part_img) != len(part_real):
         raise ValueError
     # end safeguard
 
@@ -22,10 +22,20 @@ def make_number_complex(part_real, part_img):
     module_norm = np.array([(module[i] / max_module) * 100 for i in range(len(part_real))])
 
     # Calcul de l'argument
-    argument = np.array([ (360 - ((np.arctan( abs(part_img[i] / part_real[i])) / math.pi) * 180)) for i in range(len(part_real))])
+    argument = np.array([((np.arctan(part_img[i] / part_real[i]) / math.pi) * 180) for i in range(len(part_real))])
+    for i in range(len(part_real)):
+        if part_real[i] < 0:        # Remise de l'argument sur 360°
+            argument[i] += 180
+        if argument[i] > 0:         # Inversion du sens des angles (trigo -> anti-trigo)
+            argument[i] = 360 - argument[i]
+        else:
+            argument[i] = abs(argument[i])
 
     return module_norm, argument
 
 
-test_value = make_number_complex(real, imaginary)
-print(test_value)
+module, argument = make_number_complex(real, imaginary)
+print(module, argument)
+
+print(module[328])
+print(argument[859])
