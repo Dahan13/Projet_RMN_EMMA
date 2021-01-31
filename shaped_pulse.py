@@ -9,7 +9,7 @@ real, imaginary = dh.data_extractor(path_file)
 
 def make_number_complex(part_real, part_img):
     # Prend en argument np.array de réels et np.array d'imaginaires
-    # pour retourner np.array de modules et d'arguments (en degré)
+    # pour retourner np.array de modules et d'arguments (en degrés)
 
     # safeguard
     if len(part_real) == 0 or len(part_img) != len(part_real):
