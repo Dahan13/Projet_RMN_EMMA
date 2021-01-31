@@ -3,6 +3,6 @@ import data_handling as dh
 import shaped_pulse as shp
 
 path_file = r".\FILE_1_emma21_10010_FID_ANALOG.txt"
-result = shp.make_number_complex(dh.data_extractor(path_file))
+result = shp.make_number_complex(dh.data_extractor(path_file)[0], dh.data_extractor(path_file)[1])
 
-print(result)
+print("Module\n", result[0], "\nArgument\n", result[1])
