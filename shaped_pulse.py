@@ -5,11 +5,6 @@ import numpy as np
 import data_handling as dh
 
 
-
-path_file = r".\FILE_1_emma21_10010_FID_ANALOG.txt"
-data = dh.data_extractor(path_file)
-
-
 def make_number_complex(data):
     # Prend en argument np.array de réels et np.array d'imaginaires
     # pour retourner np.array de modules et d'arguments (en degrés)
@@ -28,9 +23,3 @@ def make_number_complex(data):
     argument = np.array([-(cmath.phase(i) * 180. / cmath.pi) % 360. for i in data])
    
     return module, argument
-
-
-module, argument = make_number_complex(data)
-
-print(module)
-print(argument)
