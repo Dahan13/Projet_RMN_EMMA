@@ -24,7 +24,7 @@ def make_number_complex(part_real, part_img):
     # Calcul de l'argument
     argument = np.array([((np.arctan(part_img[i] / part_real[i]) / math.pi) * 180) for i in range(len(part_real))])
     for i in range(len(part_real)):
-        if part_real[i] < 0:        # Remise de l'argument sur 360°
+        if part_real[i] < 0:        # Remise de l'argument sur 360° au lieu de 180°
             argument[i] += 180
         if argument[i] > 0:         # Inversion du sens des angles (trigo -> anti-trigo)
             argument[i] = 360 - argument[i]
