@@ -26,8 +26,8 @@ def data_extractor(path):
                 imaginary_index = i - 3
             data.append(int(y))
 
-    real_data = np.array(data[:imaginary_index])
-    imaginary_data = np.array(data[imaginary_index:])
+    real_data = np.array(data[:imaginary_index], dtype=np.int64)
+    imaginary_data = np.array(data[imaginary_index:], dtype=np.int64)
 
     return real_data, imaginary_data
 

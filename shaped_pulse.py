@@ -2,8 +2,7 @@
 import math
 import numpy as np
 import data_handling as dh
-
-path_file = 'FILE_1_emma21_10010_FID_ANALOG.txt'
+path_file = r".\FILE_1_emma21_10010_FID_ANALOG.txt"
 real, imaginary = dh.data_extractor(path_file)
 
 
