@@ -5,7 +5,7 @@ output_file_header = "##TITLE= \n##JCAMP-DX= 5.00 Bruker JCAMP library\n##DATA T
 output_file_footer = "##END="
 
 
-def data_extractor(path):  # Extract data from designated file
+def data_extractor(path):  # Extracts data from designated file
 
     """Takes in the JCAMP file's path, then extracts and returns real and imaginary parts as two np.array"""
 
@@ -26,10 +26,10 @@ def data_extractor(path):  # Extract data from designated file
             regex = re.findall(r"\d+[ ]+[-]*\d+", line)
             if regex:
                 (x, y) = re.findall(r"[-]*\d+", str(regex[0]))
-                if int(x) == 0:  # When finding the second 0 point stock position of first imaginary
+                if int(x) == 0:  # When finding the second 0 point stocks position of first imaginary
                     imaginary_index = i - 3
                 data.append(int(y))
-        real_data = np.array(data[:imaginary_index], dtype=int)  # Separate data
+        real_data = np.array(data[:imaginary_index], dtype=int)  # Separates data
         imaginary_data = np.array(data[imaginary_index:], dtype=int)
 
         f.close()
@@ -52,8 +52,8 @@ def data_writer(module, argument, path):
         assert len(module) == len(argument), "Data error : different number of modulus and arguments."
         # end safeguard
 
-        f.write(output_file_header)  # Add header
-        for i in range(len(module)):  # Write data
+        f.write(output_file_header)  # Adds header
+        for i in range(len(module)):  # Writes data
             f.write(format(module[i], ".6E") + ", " + format(argument[i], ".6E") + "\n")
-        f.write(output_file_footer)  # Add Footer
+        f.write(output_file_footer)  # Adds Footer
         f.close()
