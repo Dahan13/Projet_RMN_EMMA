@@ -2,9 +2,9 @@ import data_handling
 import shaped_pulse
 import tkinter.filedialog as filedialog
 
-# Ask for the file to use
+# Asks for the file to use
 filename = filedialog.askopenfilename(title="Choisissez le document à ouvrir",
-                                      defaultextension=".txt")  # show an "Open" dialog box and return the path to the selected file
+                                      defaultextension=".txt")  # shows an "Open" dialog box and returns the path to the selected file
 # Safeguard
 if filename == "" or filename is None:
     raise ValueError
