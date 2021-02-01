@@ -38,8 +38,8 @@ def data_extractor(path):
     return data
 
 
-def data_writer(module, argument):
-    f = open(r"./output.txt", "w+")
+def data_writer(module, argument, path):
+    f = open(path, "w+")
 
     # safeguard
     assert len(module) == len(argument), "Data error : different number of modulus and arguments."
