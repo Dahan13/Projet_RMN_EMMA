@@ -6,5 +6,3 @@ TODO :
 - [ ] Prendre connaissances des logiciels (TopSpin)
 - [ ] Apprendre à se servir de GitHub
 
-Documents partagés par S.V. :
-https://amubox.univ-amu.fr/s/JBeKHQjASpLYkoE
