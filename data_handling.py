@@ -5,47 +5,55 @@ output_file_header = "##TITLE= \n##JCAMP-DX= 5.00 Bruker JCAMP library\n##DATA T
 output_file_footer = "##END="
 
 
-def data_extractor(path):
-    f = open(path, "r")
+def data_extractor(path):  # Extract data from designated file
 
-    data = []
+    """Takes in the JCAMP file's path, then extracts and returns real and imaginary parts as two np.array"""
 
-    for line in f:
-        text = str(line)
-        if text == "$$ Real data points\n":
-            f.readline()
-            f.readline()
-            break
+    with open(path, "r") as f:
 
-    imaginary_index = 0
+        data = []
+        # Finds end of Header
+        for line in f:
+            text = str(line)
+            if text == "$$ Real data points\n":
+                f.readline()
+                f.readline()
+                break
 
-    for i, line in enumerate(f):
-        regex = re.findall(r"\d+[ ]+[-]*\d+", line)
-        if regex:
-            (x, y) = re.findall(r"[-]*\d+", str(regex[0]))
-            if int(x) == 0:
-                imaginary_index = i - 3
-            data.append(int(y))
-    real_data = np.array(data[:imaginary_index], dtype=int)
-    imaginary_data = np.array(data[imaginary_index:], dtype=int)
+        imaginary_index = 0
 
-    # safeguard
-    assert len(real_data) == len(imaginary_data), "Data error : different number of real and imaginary parts."
-    # end safeguard
+        for i, line in enumerate(f):
+            regex = re.findall(r"\d+[ ]+[-]*\d+", line)
+            if regex:
+                (x, y) = re.findall(r"[-]*\d+", str(regex[0]))
+                if int(x) == 0:  # When finding the second 0 point stock position of first imaginary
+                    imaginary_index = i - 3
+                data.append(int(y))
+        real_data = np.array(data[:imaginary_index], dtype=int)  # Separate data
+        imaginary_data = np.array(data[imaginary_index:], dtype=int)
 
-    data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
+        f.close()
 
-    return data
+        # safeguard
+        assert len(real_data) == len(imaginary_data), "Data error : different number of real and imaginary parts."
+        # end safeguard
+
+        data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
+
+        return data
 
 
-def data_writer(module, argument):
-    f = open(r"./output.txt", "w+")
+def data_writer(module, argument, path):
 
-    # safeguard
-    assert len(module) == len(argument), "Data error : different number of modulus and arguments."
-    # end safeguard
+    """Takes in two np.array with modulus and argument and output file's path. Writes data in output file, with hearder and footer."""
 
-    f.write(output_file_header)
-    for i in range(len(module)):
-        f.write(format(module[i], ".6E") + ", " + format(argument[i], ".6E") + "\n")
-    f.write(output_file_footer)
+    with open(path, "w+") as f:
+        # safeguard
+        assert len(module) == len(argument), "Data error : different number of modulus and arguments."
+        # end safeguard
+
+        f.write(output_file_header)  # Add header
+        for i in range(len(module)):  # Write data
+            f.write(format(module[i], ".6E") + ", " + format(argument[i], ".6E") + "\n")
+        f.write(output_file_footer)  # Add Footer
+        f.close()
