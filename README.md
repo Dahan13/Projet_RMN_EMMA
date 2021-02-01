@@ -4,7 +4,14 @@ TODO :
 - [x] Contacter l'encadrant
 - [x] Lire les documents initiaux fournis
 - [ ] Prendre connaissances des logiciels (TopSpin)
-- [ ] Apprendre à se servir de GitHub
+- [X] Apprendre à se servir de GitHub
+
+- [ ] Délivrable 1
+- [ ] Délivrable 2
+- [ ] Délivrable 3
+- [ ] Délivrable 4
+- [ ] Délivrable 5
+- [ ] Délivrable 6
 
 Documents partagés par S.V. :
 https://amubox.univ-amu.fr/s/JBeKHQjASpLYkoE
