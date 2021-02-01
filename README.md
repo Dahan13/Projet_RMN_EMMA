@@ -13,5 +13,3 @@ TODO :
 - [ ] Délivrable 5
 - [ ] Délivrable 6
 
-Documents partagés par S.V. :
-https://amubox.univ-amu.fr/s/JBeKHQjASpLYkoE
