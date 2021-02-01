@@ -1,8 +1,5 @@
-# Created by Humbert de Chastellux the 31/01/2021
-
 import cmath
 import numpy as np
-import data_handling as dh
 
 
 def make_number_complex(data):
@@ -21,5 +18,5 @@ def make_number_complex(data):
 
     # Calcul de l'argument avec modifications pour correspondre aux données du fichier excel
     argument = np.array([-(cmath.phase(i) * 180. / cmath.pi) % 360. for i in data])
-   
+
     return module, argument
