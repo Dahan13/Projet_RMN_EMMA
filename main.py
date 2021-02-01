@@ -1,8 +1,9 @@
 # Created by Humbert de Chastellux the 31/01/2021
-import data_handling as dh
-import shaped_pulse as shp
+import data_handling as data_handling
+import shaped_pulse as shaped_pulse
 
-path_file = r".\FILE_1_emma21_10010_FID_ANALOG.txt"
-result = shp.make_number_complex(dh.data_extractor(path_file)[0], dh.data_extractor(path_file)[1])
+path_file = r"datafiles\FILE_1_emma21_10010_FID_ANALOG.txt"
 
-print("Module\n", result[0], "\nArgument\n", result[1])
+module, argument = shaped_pulse.make_number_complex(data_handling.data_extractor(path_file))
+
+data_handling.data_writer(module, argument)
