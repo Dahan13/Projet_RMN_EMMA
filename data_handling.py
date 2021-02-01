@@ -5,47 +5,48 @@ output_file_header = "##TITLE= \n##JCAMP-DX= 5.00 Bruker JCAMP library\n##DATA T
 output_file_footer = "##END="
 
 
-def data_extractor(path):
+def data_extractor(path):  # Extract data from designated file
     f = open(path, "r")
 
     data = []
-
+    # Locate end of Header
     for line in f:
         text = str(line)
         if text == "$$ Real data points\n":
             f.readline()
             f.readline()
             break
-
+    # End of Header founded
     imaginary_index = 0
-
+    # Extract point
     for i, line in enumerate(f):
         regex = re.findall(r"\d+[ ]+[-]*\d+", line)
         if regex:
             (x, y) = re.findall(r"[-]*\d+", str(regex[0]))
-            if int(x) == 0:
+            if int(x) == 0:  # When finding the second 0 point stock position of first imaginary
                 imaginary_index = i - 3
             data.append(int(y))
-    real_data = np.array(data[:imaginary_index], dtype=int)
+    real_data = np.array(data[:imaginary_index], dtype=int)  # Separate data
     imaginary_data = np.array(data[imaginary_index:], dtype=int)
 
     # safeguard
     assert len(real_data) == len(imaginary_data), "Data error : different number of real and imaginary parts."
     # end safeguard
 
+    # Turning it into a single np.array
     data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
 
     return data
 
 
 def data_writer(module, argument, path):
-    f = open(path, "w+")
+    f = open(path, "w+")  # Open file
 
     # safeguard
     assert len(module) == len(argument), "Data error : different number of modulus and arguments."
     # end safeguard
 
-    f.write(output_file_header)
-    for i in range(len(module)):
+    f.write(output_file_header)  # Add header
+    for i in range(len(module)):  # Write data
         f.write(format(module[i], ".6E") + ", " + format(argument[i], ".6E") + "\n")
-    f.write(output_file_footer)
+    f.write(output_file_footer)  # Add Footer
