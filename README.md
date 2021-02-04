@@ -11,7 +11,7 @@ YOU MUST : - Install a Python Interpreter (Version 3.9 or newer)
 
 Install all the required modules (tkinter, numpy, cmath, datetime, re  for 1.0 ver.)
 
-Launch main.py by typing >> python3 main.py << in the folder with the programs
+Launch main.py by typing >> python3 main.py << in the terminal opened in the folder with the programs
 
  OR - Install an IDE (programming interface) such as Pycharm (by JetBrain) and launch main.py through it, it will handle everything.
  
