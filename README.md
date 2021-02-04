@@ -9,7 +9,7 @@ To execute :
 
 YOU MUST : - Install a Python Interpreter (Version 3.9 or newer)
 
-Install all the required modules (to see what modules are required, open .py files and read the names after "import" in the headers)
+Install all the required modules (tkinter for 1.0 ver.)
 
 Launch main.py by typing >> python3 main.py << in the folder with the programs
 
