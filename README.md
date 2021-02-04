@@ -1,7 +1,7 @@
 # Projet_RMN_EMMA
 
 
-Execute main.py to start
+>>> Execute main.py to start
 
 ###
 To execute :
@@ -17,6 +17,6 @@ Launch main.py by typing >> python3 main.py << in the folder with the programs
  
  ###
 
-Use a JCAMP file (.txt) from TopSpin using FIX export method as input
+>>> Use a JCAMP file (.txt) from TopSpin using FIX export method as input
 
-Give a shaped pulse from a FID in a .txt ready to be used in TopSpin
+>>> Give a shaped pulse from a FID in a .txt ready to be used in TopSpin
