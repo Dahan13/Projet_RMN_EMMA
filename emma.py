@@ -19,8 +19,13 @@ if mode == "ifft":
     for i in range(n):
         imaginary.append(float(input("")))
 
-    print(real)
-    print(imaginary)
+    signal = np.array([complex(real[i], imaginary[i]) for i in range(len(real))])
+
+    ifft = np.fft.ifft(signal)
+
+    for i in ifft:
+        print(i)
+
 
 else:
     assert 1 == 0, "wrong mode"

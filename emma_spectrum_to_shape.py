@@ -3,6 +3,7 @@
 
 import cmath
 from subprocess import Popen, PIPE
+import re
 
 FILE = 'emma.py'
 
@@ -20,7 +21,7 @@ COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
 
 def retrieve_spectrum():
 	real = GETPROCDATA(-1000, 1000)
-	imaginary = GETPROCDATA(-1000, 1000, type = dataconst.PROCDATA_IMAG)
+	imaginary = GETPROCDATA(-1000, 1000, type = dataconst.PROCDATA_IMAG) 
 
 	assert len(real) == len(imaginary), "Incorrect data, some real or imaginary numbers are missing"
 	
@@ -39,40 +40,36 @@ def ifft((real, imaginary)):
 	for i in imaginary:
 		p.stdin.write(str(i) + "\n")
 	
+	# Output contains the ifft done in tha emma.py file
 
 	output, err = p.communicate()
 
-	VIEWTEXT(
-    title='hello_numpy', header='Output of hello_numpy script',
-    text=output+'\n'+err, modal=0)
+	ifft_result = []
 
-ifft(retrieve_spectrum())
+	numbers = re.findall(r'.+\d+.+\d+\w.', output)
+
+	for number in numbers:
+		if number != []:
+			ifft_result.append(complex(number[1:-1]))
+
+	return ifft_result
 
 
-
-
-""" Délivrable 1, là pour stockage
-
-
-data = [real[i] + 1j * imaginary[i] for i in range(len(real))]
+data = ifft(retrieve_spectrum())
 
 modulus = [abs(data[i]) for i in range(len(data))]
-modulus = [float(i) / float(max(modulus)) * 100. for i in modulus]
+modulus = [float(i) / max(modulus) * 100. for i in modulus]
 
-	# Argument + modifications
+	# phase + modifications
 
 phase = [-(cmath.phase(i) * 180. / cmath.pi) % 360. for i in data]
-text = "" 
-MSG(str(type(phase[0])))
 
-
-
+text = ""
 
 for i in range(len(modulus)):
-	text += str(i) + " " + str(phase[i])  + "\n"
-VIEWTEXT("GETPROCDATA Test", "Computed modulus", text)
+	text += str(i) + " : Modulus : " + str(modulus[i]) + " ; Phase : " + str(phase[i])  + "\n"
+VIEWTEXT(title="Spectrum to shape", header="Spectrum to shape", text=text)
 
-SAVE_SHAPE("test_emma_delivrable_2", "Excitation", phase, modulus)
+SAVE_SHAPE("Spectrum to shape", "Spectrum to shape", modulus, phase)
 
-MSG("Shape saved under the name : ")
-"""
+MSG("Shape saved under the name : Spectrum to shape")
