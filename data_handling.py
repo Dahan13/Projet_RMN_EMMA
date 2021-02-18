@@ -18,14 +18,17 @@ def data_extractor(path):  # Extracts data from designated file
                 f.readline()
                 break
 
-        imaginary_index = 0
+        first_line = re.findall(r"\d+[ ]+[-]*\d+", f.readline())
+        (first_x, first_y) = re.findall(r"[-]*\d+", first_line[0])
+        beacon = int(first_x)
+        data.append(int(first_y))
 
         for i, line in enumerate(f):
             regex = re.findall(r"\d+[ ]+[-]*\d+", line)
             if regex:
                 (x, y) = re.findall(r"[-]*\d+", str(regex[0]))
-                if int(x) == 0:  # When finding the second 0 point stocks position of first imaginary
-                    imaginary_index = i - 3
+                if int(x) == beacon:  # When finding the second 0 point stocks position of first imaginary
+                    imaginary_index = i - 2
                 data.append(int(y))
         real_data = np.array(data[:imaginary_index], dtype=int)  # Separates data
         imaginary_data = np.array(data[imaginary_index:], dtype=int)
