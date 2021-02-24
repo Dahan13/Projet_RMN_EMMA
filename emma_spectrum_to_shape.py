@@ -60,16 +60,15 @@ data = ifft(retrieve_spectrum())
 modulus = [abs(data[i]) for i in range(len(data))]
 modulus = [float(i) / max(modulus) * 100. for i in modulus]
 
-	# phase + modifications
+# phase + modifications
 
-phase = [-(cmath.phase(i) * 180. / cmath.pi) % 360. for i in data]
+phase = [(cmath.phase(i) * 180. / cmath.pi) % 360. for i in data]
 
-text = ""
-
+""" text = ""
 for i in range(len(modulus)):
 	text += str(i) + " : Modulus : " + str(modulus[i]) + " ; Phase : " + str(phase[i])  + "\n"
 VIEWTEXT(title="Spectrum to shape", header="Spectrum to shape", text=text)
-
+ """
 SAVE_SHAPE("Spectrum to shape", "Spectrum to shape", modulus, phase)
 
 MSG("Shape saved under the name : Spectrum to shape")

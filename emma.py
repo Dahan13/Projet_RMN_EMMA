@@ -3,8 +3,11 @@
 
 import re
 import numpy as np
+import cmath
+import math
 
 mode = input("")
+
 
 if mode == "ifft":
 
@@ -19,13 +22,15 @@ if mode == "ifft":
     for i in range(n):
         imaginary.append(float(input("")))
 
-    signal = np.array([complex(real[i], imaginary[i]) for i in range(len(real))])
+    n = len(real)
+
+    signal = np.array([complex(real[i], imaginary[i]) for i in range(n)])
+    signal = np.fft.ifftshift(signal)
 
     ifft = np.fft.ifft(signal)
 
     for i in ifft:
         print(i)
-
 
 else:
     assert 1 == 0, "wrong mode"
