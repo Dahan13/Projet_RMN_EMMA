@@ -2,6 +2,7 @@ import data_handling
 import shaped_pulse
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
+import tkinter as tk
 
 notification_title = "Warning !"  # Some memory optimization (and to stop my IDE from bothering me)
 save_message = "Save the newly created text document"  # Same here
@@ -36,6 +37,29 @@ def write_file(module, argument, output_path):
     data_handling.data_writer(module, argument, output_path)
 
 
+def input_td():
+    """ Wisely use of tkinter to get an int"""
+
+    # Configuration of tkinter window
+    master = tk.Tk()
+    tk.Label(master, text="Please input the total number of points (real + imaginary) the file have : ").grid(row=0)
+    e2 = tk.Entry(master)
+    e2.grid(row=2)
+    tk.Button(master,
+              text='OK !',
+              command=master.quit).grid(row=3,
+                                        column=0,
+                                        sticky=tk.W,
+                                        pady=4)
+    master.mainloop()
+    # Check if input is an int
+    if e2.get().isdigit() and e2.get() != "0":
+        return int(e2.get())
+    else:
+        # Remove the window in use and put a new one
+        master.destroy()
+        input_td()
+
 
 def main_start():
     """ The main program directing everything. data_handling.py and shaped_pulse.py are mandatory """
@@ -47,6 +71,9 @@ def main_start():
     while filename == "" or filename is None:
         messagebox.showwarning(title=notification_title, message=path_error)
         filename = ask_open_file("Please select the text document to open.", ".txt")
+
+    # Input for total points (TD) in the inital datas :
+    total_points = input_td()
 
     # Handle the calculus and create the new datas
     module, argument = shaped_pulse.make_number_complex(data_handling.data_extractor(filename, total_points))

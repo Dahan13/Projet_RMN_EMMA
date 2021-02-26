@@ -1,6 +1,8 @@
 import re
 import numpy as np
 from datetime import datetime
+import math
+import tkinter.messagebox as messagebox
 
 
 def data_extractor(path, TD):  # Extracts data from designated file
@@ -51,6 +53,7 @@ def data_extractor(path, TD):  # Extracts data from designated file
         assert len(real_data) == len(imaginary_data), "Data error : different number of real and imaginary parts."
         # end safeguard
 
+        # Filling final dataset with correct values
         data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
 
         # Checking filtering status
