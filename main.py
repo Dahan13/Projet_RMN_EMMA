@@ -36,6 +36,7 @@ def write_file(module, argument, output_path):
     data_handling.data_writer(module, argument, output_path)
 
 
+
 def main_start():
     """ The main program directing everything. data_handling.py and shaped_pulse.py are mandatory """
 
@@ -48,7 +49,7 @@ def main_start():
         filename = ask_open_file("Please select the text document to open.", ".txt")
 
     # Handle the calculus and create the new datas
-    module, argument = shaped_pulse.make_number_complex(data_handling.data_extractor(filename))
+    module, argument = shaped_pulse.make_number_complex(data_handling.data_extractor(filename, total_points))
 
     # Make the user choose path & name for the newly created document
     output_path = ask_save_file(save_message, ".txt")

@@ -2,3 +2,5 @@ __pycache__/
 .idea/
 output.txt
 __pychache__\
+testfiles\
+/testfiles/
