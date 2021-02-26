@@ -1,23 +1,37 @@
 import re
 import numpy as np
 from datetime import datetime
+import math
+import tkinter.messagebox as messagebox
 
 
-def data_extractor(path):  # Extracts data from designated file
+def data_extractor(path, TD):  # Extracts data from designated file
 
     """Takes in the JCAMP file's path, then extracts and returns real and imaginary parts as two np.array"""
 
     with open(path, "r") as f:
 
         data = []
-        # Finds end of Header
+
         for line in f:
             text = str(line)
+            # Find total number of point to be filtered
+            if re.findall(r"GRPDLY", text):
+                grpdly = re.findall(r"GRPDLY=+[ ]+\d.*\d", text)
+                grpdly = float(grpdly[0].split("= ")[1])
+                correction_checker = (grpdly != -1)  # check if the argument has a usable value
+                # Round the value of grpdly at the correct value
+                grpdly = math.floor(grpdly)
+                if grpdly % 2 != 0:
+                    grpdly += 1
+
+            # Finds end of Header
             if text == "$$ Real data points\n":
                 f.readline()
                 f.readline()
                 break
 
+        # Find a beacon to determine were is the start of each group
         first_line = re.findall(r"\d+[ ]+[-]*\d+", f.readline())
         (first_x, first_y) = re.findall(r"[-]*\d+", first_line[0])
         beacon = int(first_x)
@@ -27,7 +41,7 @@ def data_extractor(path):  # Extracts data from designated file
             regex = re.findall(r"\d+[ ]+[-]*\d+", line)
             if regex:
                 (x, y) = re.findall(r"[-]*\d+", str(regex[0]))
-                if int(x) == beacon:  # When finding the second 0 point stocks position of first imaginary
+                if int(x) == beacon:  # When finding the second beacon stocks position of first imaginary
                     imaginary_index = i - 2
                 data.append(int(y))
         real_data = np.array(data[:imaginary_index], dtype=int)  # Separates data
@@ -39,8 +53,15 @@ def data_extractor(path):  # Extracts data from designated file
         assert len(real_data) == len(imaginary_data), "Data error : different number of real and imaginary parts."
         # end safeguard
 
+        # Filling final dataset with correct values
         data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
 
+        # Checking filtering status
+        if correction_checker:
+            # Filtering
+            data = data_completer(TD, data, grpdly)
+        else:
+            messagebox.showwarning(title="Filtering impossible", message="Filtering impossible due to missing \'GRPDLY\' argument")
         return data
 
 
@@ -74,3 +95,15 @@ def header_creator(table):
                          "\n##$SHAPE_BWFAC= 1.283480E02\n##$SHAPE_BWFAC50= \n##$SHAPE_INTEGFAC= " \
                          f"6.370927E-03\n##$SHAPE_MODE= 1\n##NPOINTS= {number}\n##XYPOINTS= (XY..XY)\n"
     return output_file_header
+
+
+def data_completer(TD, data, nbr_of_filtered):
+    """Execute the filtration depending of if it has already be done"""
+    if len(data) * 2 != TD:  # case if already filtered
+        for i in range(nbr_of_filtered // 2):
+            data = np.append(data, (0, 0))
+    else:
+        data = data[(nbr_of_filtered // 2):]
+        for i in range(nbr_of_filtered // 2):
+            data = np.append(data, (0, 0))
+    return data
