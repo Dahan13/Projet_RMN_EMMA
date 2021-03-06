@@ -46,7 +46,7 @@ def input_td():
     e2 = tk.Entry(master)
     e2.grid(row=2)
     tk.Button(master,
-              text='OK !',
+              text='Validate !',
               command=master.quit).grid(row=3,
                                         column=0,
                                         sticky=tk.W,
@@ -76,6 +76,7 @@ def main_start():
     total_points = input_td()
 
     # Handle the calculus and create the new datas
+    print("Creating Shaped pulse...")
     module, argument = shaped_pulse.make_number_complex(data_handling.data_extractor(filename, total_points))
 
     # Make the user choose path & name for the newly created document
@@ -100,6 +101,7 @@ def main_start():
     # Write & save the new document normally if no occurence between input and output paths
     else:
         write_file(module, argument, output_path)
+    print(f"\n#=====#\nFile sucessfully written as \"{output_path}\", no fatal error.\n#=====#\n")
 
 
 main_start()

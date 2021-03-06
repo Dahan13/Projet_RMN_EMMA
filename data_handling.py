@@ -55,7 +55,6 @@ def data_extractor(path, TD):  # Extracts data from designated file
 
         # Filling final dataset with correct values
         data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
-
         # Checking filtering status
         if correction_checker:
             # Filtering
@@ -100,10 +99,13 @@ def header_creator(table):
 def data_completer(TD, data, nbr_of_filtered):
     """Execute the filtration depending of if it has already be done"""
     if len(data) * 2 != TD:  # case if already filtered
-        for i in range(nbr_of_filtered // 2):
-            data = np.append(data, (0, 0))
+        print("Completing...")
+        for i in range(nbr_of_filtered):
+            data = np.append(data, complex(0, 0))
     else:
-        data = data[(nbr_of_filtered // 2):]
-        for i in range(nbr_of_filtered // 2):
-            data = np.append(data, (0, 0))
+        print("Filtering...")
+        data = data[nbr_of_filtered:]
+        print("Completing...")
+        for i in range(nbr_of_filtered):
+            data = np.append(data, complex(0, 0))
     return data
