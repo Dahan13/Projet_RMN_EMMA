@@ -1,4 +1,4 @@
-# Projet_RMN_EMMA
+# Projet_RMN_EMMA V1.0
 
 
 >>> Execute main.py to start

@@ -1,4 +1,4 @@
-import data_handling
+from manual_version import data_handling
 import shaped_pulse
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
