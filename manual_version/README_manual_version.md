@@ -1,15 +1,22 @@
 # Projet_RMN_EMMA V1.0
 
 
-C'est juste pour regarder un peu pour l'instant ça donne juste le spectre à un script python normal qui la renvoie pour vérifier que ça marche
+>>> Execute main.py to start
 
-NE FONCTIONNE QUE SOUS WINDOWS POUR L'INSTANT !
+###
+To execute :
 
-Pour tester : 
 
-- placer emma_fid_to_shape.py dans D:\Programmes\Topspin4\exp\stan\nmr\py\user
-- créer le nouveau dossier D:\Programmes\Topspin4\exp\stan\nmr\py\emma
-- déplacer emma.py dans D:\Programmes\Topspin4\exp\stan\nmr\py\emma
-- actualiser les chemins dans emma_fid_to_shape.py (premières variables)
-- ouvrir la courbe de test dans topspin, tapper edpy et lancer emma_fid_to_shape.py
+YOU MUST : - Install a Python Interpreter (Version 3.9 or newer)
 
+Install all the required modules (tkinter, numpy, cmath, datetime, re  for 1.0 ver.)
+
+Launch main.py by typing >> python3 main.py << in the terminal opened in the folder with the programs
+
+ OR - Install an IDE (programming interface) such as Pycharm (by JetBrain) and launch main.py through it, it will handle everything.
+ 
+ ###
+
+>>> Use a JCAMP file (.txt) from TopSpin using FIX export method as input
+
+>>> Give a shaped pulse from a FID in a .txt ready to be used in TopSpin
