@@ -18,13 +18,32 @@ def ask_open_file(title: str, extension: str = None) -> str:
 
 
 def main():
-    topspin_path = ask_directory("Select Topspin main directory")
-    python_path = ask_open_file("Select Python executable")
-    # move each file to the right path
-    # emma_starter_origin = r".\emma_spectrum_to_shape.py"
-    # emma_starter_target = r".\test\emma_spectrum_to_shape.py"
-    # shutil.move(emma_starter_origin, emma_starter_target)
-    print(python_path, topspin_path)
+    # Source
+    emma_directory = r"/test/emma/"
+    emma_starter_origin = r"./emma_spectrum_to_shape.py"
+    emma_starter_target = r"/test/emma_spectrum_to_shape.py"
+    emma_origin = r"./emma.py"
+    emma_target = r"emma.py"
+
+    # Info from user
+    topspin_path = r"S:\gitstuff\projet_RMN_EMMA"
+    python_path = r"S:\anaconda\python.exe"
+    # topspin_path = ask_directory("Select Topspin main directory")
+    # python_path = ask_open_file("Select Python executable")
+
+    # Create path
+    emma_directory = topspin_path+emma_directory
+    emma_target = emma_directory+emma_target
+    emma_starter_target = topspin_path+emma_starter_target
+    print(emma_directory)
+    print(emma_target)
+    print(emma_starter_target)
+
+    # Creating directory and moving files
+    if not os.path.exists(emma_directory):
+        os.mkdir(emma_directory)
+    shutil.move(emma_origin, emma_target)
+    shutil.move(emma_starter_origin, emma_starter_target)
 
 
 main()
