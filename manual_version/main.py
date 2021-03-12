@@ -58,7 +58,9 @@ def input_td():
     master.mainloop()
     # Check if input is an int
     if e2.get().isdigit() and e2.get() != "0":
-        return int(e2.get())
+        result = int(e2.get())
+        master.destroy()
+        return result
     else:
         # Remove the window in use and put a new one
         master.destroy()
