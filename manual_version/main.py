@@ -3,6 +3,7 @@ import shaped_pulse
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
 import tkinter as tk
+import os
 
 notification_title = "Warning !"  # Some memory optimization (and to stop my IDE from bothering me)
 save_message = "Save the newly created text document"  # Same here
@@ -51,6 +52,7 @@ def input_td():
                                         column=0,
                                         sticky=tk.W,
                                         pady=4)
+    os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
     master.attributes("-topmost", True)
     master.after_idle(master.attributes,'-topmost',False)
     master.mainloop()
