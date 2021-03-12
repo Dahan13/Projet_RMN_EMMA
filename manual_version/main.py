@@ -51,8 +51,8 @@ def input_td():
                                         column=0,
                                         sticky=tk.W,
                                         pady=4)
-    master.mainloop()
     master.attributes("-topmost", True)
+    master.mainloop()
     # Check if input is an int
     if e2.get().isdigit() and e2.get() != "0":
         return int(e2.get())
