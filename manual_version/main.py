@@ -54,7 +54,7 @@ def input_td():
                                         pady=4)
     os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
     master.attributes("-topmost", True)
-    master.after_idle(master.attributes,'-topmost',False)
+    master.attributes("-topmost", False)
     master.mainloop()
     # Check if input is an int
     if e2.get().isdigit() and e2.get() != "0":
