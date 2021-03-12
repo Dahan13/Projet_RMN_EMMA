@@ -1,4 +1,4 @@
-from manual_version import data_handling
+import data_handling
 import shaped_pulse
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
@@ -74,6 +74,7 @@ def main_start():
 
     # Input for total points (TD) in the inital datas :
     total_points = input_td()
+    # total_points = int(input("Please input the total number of points (real + imaginary) the file have :\n"))
 
     # Handle the calculus and create the new datas
     print("Creating Shaped pulse...")
