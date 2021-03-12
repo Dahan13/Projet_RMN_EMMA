@@ -73,8 +73,8 @@ def main_start():
         filename = ask_open_file("Please select the text document to open.", ".txt")
 
     # Input for total points (TD) in the inital datas :
-    # total_points = input_td()
-    total_points = int(input("Please input the total number of points (real + imaginary) the file have :\n"))
+    total_points = input_td()
+    # total_points = int(input("Please input the total number of points (real + imaginary) the file have :\n"))
 
     # Handle the calculus and create the new datas
     print("Creating Shaped pulse...")
