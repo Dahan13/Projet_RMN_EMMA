@@ -1,6 +1,5 @@
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
-from typing import Any
 import os
 import shutil
 
@@ -26,12 +25,9 @@ def main():
     emma_origin = r"./emma.py"
 
     # Info from user
-    # topspin_path = r"S:\topspin"
-    # python_path = r"S:\anaconda\python.exe"
-
     topspin_path = ask_directory("Select Topspin main directory")
-    # Safeguard, if filename is invalid (not a string)
-    while topspin_path == "" or topspin_path is None or not os.path.exists(topspin_path+"/topspin.cmd"):
+    # Safeguard, if directory is invalid (not a string or not topspin)
+    while topspin_path == "" or topspin_path is None or not os.path.exists(topspin_path + "/topspin.cmd"):
         messagebox.showwarning(title="Warning !", message="Please select a valid path !")
         topspin_path = ask_directory("Select Topspin main directory")
     print("Topspin directory set to:\n", topspin_path)
@@ -52,13 +48,13 @@ def main():
     if not os.path.exists(emma_directory):
         os.mkdir(emma_directory)
         print("EMMA directory created at:\n", emma_directory)
-    shutil.move(emma_origin, emma_target)
+    shutil.copy(emma_origin, emma_target)
     print("EMMA process successfully moved to: \n", emma_target)
-    shutil.move(emma_starter_origin, emma_starter_target)
+    shutil.copy(emma_starter_origin, emma_starter_target)
     print("EMMA starter successfully moved to: \n", emma_starter_target)
 
     # Writting settings
-    f = open(f"./emma_settings.txt", "w")
+    f = open(f"{topspin_path + emma_directory}emma_settings.txt", "w")
     f.write("# OS:\n")
     f.write("Windows\n")
     f.write("# Topspin path: \n")
