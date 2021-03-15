@@ -54,7 +54,7 @@ def main():
     print("EMMA starter successfully moved to: \n", emma_starter_target)
 
     # Writting settings
-    f = open(f"{topspin_path + emma_directory}emma_settings.txt", "w")
+    f = open(f"{emma_directory}emma_settings.txt", "w")
     f.write("# OS:\n")
     f.write("Windows\n")
     f.write("# Topspin path: \n")
