@@ -20,39 +20,49 @@ COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
 
 
 def retrieve_spectrum():
-	real = GETPROCDATA(-1000, 1000)
-	imaginary = GETPROCDATA(-1000, 1000, type = dataconst.PROCDATA_IMAG) 
+    real = GETPROCDATA(-1000, 1000)
+    imaginary = GETPROCDATA(-1000, 1000, type = dataconst.PROCDATA_IMAG)
 
-	assert len(real) == len(imaginary), "Incorrect data, some real or imaginary numbers are missing"
-	
-	return real, imaginary
+    if imaginary is not None and imaginary != []: # I don't know what append if there is no imaginary date -> can you test please
+        assert len(real) == len(imaginary), "Incorrect data, some real or imaginary numbers are missing"
+
+    return real, imaginary
 
 def ifft((real, imaginary)):
-	
-	p = Popen(COMMAND_LINE, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-	SHOW_STATUS('numpy ifft in progress.')
-	text = ""
-	p.stdin.write("ifft\n")
-	p.stdin.write(str(len(real)) + "\n")
-	for r in real:
-		p.stdin.write(str(r) + "\n")
-	for i in imaginary:
-		p.stdin.write(str(i) + "\n")
-	
-	# Output contains the ifft done in tha emma.py file
+    p = Popen(COMMAND_LINE, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-	output, err = p.communicate()
+    if imaginary is not None and imaginary != []: # Same here
+        SHOW_STATUS('numpy ifft in progress.')
+        text = ""
+        p.stdin.write("ifft\n")
+        p.stdin.write(str(len(real)) + "\n")
+        for r in real:
+            p.stdin.write(str(r) + "\n")
+        for i in imaginary:
+            p.stdin.write(str(i) + "\n")
 
-	ifft_result = []
+    else:
+        SHOW_STATUS('scipy ht and numpy ifft in progress.')
+        text = ""
+        p.stdin.write("ht\n")
+        p.stdin.write(str(len(real)) + "\n")
+        for r in real:
+            p.stdin.write(str(r) + "\n")
 
-	numbers = re.findall(r'.+\d+.+\d+\w.', output)
+    # Output contains the ifft done in tha emma.py file
 
-	for number in numbers:
-		if number != []:
-			ifft_result.append(complex(number[1:-1]))
+    output, err = p.communicate()
 
-	return ifft_result
+    ifft_result = []
+
+    numbers = re.findall(r'.+\d+.+\d+\w.', output)
+
+    for number in numbers:
+        if number != []:
+            ifft_result.append(complex(number[1:-1]))
+
+    return ifft_result
 
 
 data = ifft(retrieve_spectrum())
@@ -66,7 +76,7 @@ phase = [(cmath.phase(i) * 180. / cmath.pi) % 360. for i in data]
 
 """ text = ""
 for i in range(len(modulus)):
-	text += str(i) + " : Modulus : " + str(modulus[i]) + " ; Phase : " + str(phase[i])  + "\n"
+    text += str(i) + " : Modulus : " + str(modulus[i]) + " ; Phase : " + str(phase[i])  + "\n"
 VIEWTEXT(title="Spectrum to shape", header="Spectrum to shape", text=text)
  """
 SAVE_SHAPE("Spectrum to shape", "Spectrum to shape", modulus, phase)
