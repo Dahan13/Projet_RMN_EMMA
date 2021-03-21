@@ -5,7 +5,7 @@ import math
 import tkinter.messagebox as messagebox
 
 
-def data_extractor(path, TD):  # Extracts data from designated file
+def data_extractor(path, TD, truespectre=True):  # Extracts data from designated file
 
     """Takes in the JCAMP file's path, then extracts and returns real and imaginary parts as two np.array"""
 
@@ -16,7 +16,7 @@ def data_extractor(path, TD):  # Extracts data from designated file
         for line in f:
             text = str(line)
             # Find total number of point to be filtered
-            if re.findall(r"GRPDLY", text):
+            if re.findall(r"GRPDLY", text) and truespectre:
                 grpdly = re.findall(r"GRPDLY=+[ ]+\d.*\d", text)
                 grpdly = float(grpdly[0].split("= ")[1])
                 correction_checker = (grpdly != -1)  # check if the argument has a usable value
@@ -30,6 +30,11 @@ def data_extractor(path, TD):  # Extracts data from designated file
                 f.readline()
                 f.readline()
                 break
+
+        if not truespectre:
+            # find a way to calculate the GRPDLY
+            grpdly = 0
+            correction_checker = True
 
         # Find a beacon to determine were is the start of each group
         first_line = re.findall(r"\d+[ ]+[-]*\d+", f.readline())
@@ -58,7 +63,7 @@ def data_extractor(path, TD):  # Extracts data from designated file
         # Checking filtering status
         if correction_checker:
             # Filtering
-            data = data_completer(TD, data, grpdly)
+            data = data_completer(TD, data, grpdly, truespectre)
         else:
             messagebox.showwarning(title="Filtering impossible", message="Filtering impossible due to missing \'GRPDLY\' argument")
         return data
@@ -96,16 +101,22 @@ def header_creator(table):
     return output_file_header
 
 
-def data_completer(TD, data, nbr_of_filtered):
+def data_completer(TD, data, nbr_of_filtered, truespectre):
     """Execute the filtration depending of if it has already be done"""
-    if len(data) * 2 != TD:  # case if already filtered
-        print("Completing...")
+    if len(data) * 2 != TD and truespectre:  # case if already filtered
+        print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
-    else:
-        print("Filtering...")
+    elif truespectre:  # case if not filtered
+        print(f"Filtering {nbr_of_filtered} first points...")
         data = data[nbr_of_filtered:]
-        print("Completing...")
+        print(f"Completing with {nbr_of_filtered} points...")
+        for i in range(nbr_of_filtered):
+            data = np.append(data, complex(0, 0))
+    elif not truespectre:  # case if artificial FID
+        print(f"Correcting {nbr_of_filtered} last points...")
+        data = data[:nbr_of_filtered]
+        print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
     return data

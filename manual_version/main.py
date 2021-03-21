@@ -67,6 +67,11 @@ def input_td():
         input_td()
 
 
+def two_buttons_choice():
+    """Ask user to choose between to option via graphic mode"""
+    master = tk.Tk()
+
+
 def main_start():
     """ The main program directing everything. data_handling.py and shaped_pulse.py are mandatory """
 
