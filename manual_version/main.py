@@ -38,38 +38,23 @@ def write_file(module, argument, output_path):
     data_handling.data_writer(module, argument, output_path)
 
 
-def input_td():
-    """ Wisely use of tkinter to get an int"""
+def check_filepath(filepath, action: str) -> str:
+    """ Check if provided filepath is valid, take an argument to specify which type of path it needs. """
 
-    # Configuration of tkinter window
-    master = tk.Tk()
-    tk.Label(master, text="Please input the total number of points (real + imaginary) the file have : ").grid(row=0)
-    e2 = tk.Entry(master)
-    e2.grid(row=2)
-    tk.Button(master,
-              text='Validate !',
-              command=master.quit).grid(row=3,
-                                        column=0,
-                                        sticky=tk.W,
-                                        pady=4)
-    os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-    master.attributes("-topmost", True)
-    master.attributes("-topmost", False)
-    master.mainloop()
-    # Check if input is an int
-    if e2.get().isdigit() and e2.get() != "0":
-        result = int(e2.get())
-        master.destroy()
-        return result
-    else:
-        # Remove the window in use and put a new one
-        master.destroy()
-        input_td()
+    while filepath == "" or filepath is None:
+        messagebox.showwarning(title="Warning !", message="The path you provided seems to be wrong, please correct it !")
+        if action == "open":
+            filepath = filedialog.askopenfilename(title="Please select the text document to open.", defaultextension=".txt")
+        elif action == "save":
+            filepath = filedialog.asksaveasfilename(title="Please select save location", defaultextension=".txt")
+
+    return filepath
 
 
 def two_buttons_choice():
     """Ask user to choose between to option via graphic mode"""
     master = tk.Tk()
+
 
 
 def main_start():
@@ -89,7 +74,8 @@ def main_start():
 
     # Handle the calculus and create the new datas
     print("Creating Shaped pulse...")
-    module, argument = shaped_pulse.make_number_complex(data_handling.data_extractor(filename, total_points))
+    datatable = data_handling.data_extractor(filename)
+    module, argument = shaped_pulse.make_number_complex(datatable)
 
     # Make the user choose path & name for the newly created document
     output_path = ask_save_file(save_message, ".txt")

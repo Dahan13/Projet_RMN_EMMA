@@ -3,9 +3,11 @@ import numpy as np
 from datetime import datetime
 import math
 import tkinter.messagebox as messagebox
+import tkinter as tk
+import os
 
 
-def data_extractor(path, TD, truespectre=True):  # Extracts data from designated file
+def data_extractor(path, from_emma=True):  # Extracts data from designated file
 
     """Takes in the JCAMP file's path, then extracts and returns real and imaginary parts as two np.array"""
 
@@ -16,7 +18,7 @@ def data_extractor(path, TD, truespectre=True):  # Extracts data from designated
         for line in f:
             text = str(line)
             # Find total number of point to be filtered
-            if re.findall(r"GRPDLY", text) and truespectre:
+            if re.findall(r"GRPDLY", text) and from_emma:
                 grpdly = re.findall(r"GRPDLY=+[ ]+\d.*\d", text)
                 grpdly = float(grpdly[0].split("= ")[1])
                 correction_checker = (grpdly != -1)  # check if the argument has a usable value
@@ -31,9 +33,9 @@ def data_extractor(path, TD, truespectre=True):  # Extracts data from designated
                 f.readline()
                 break
 
-        if not truespectre:
+        if not from_emma:
             # find a way to calculate the GRPDLY
-            grpdly = 0
+            # grpdly = ask_value_from_user
             correction_checker = True
 
         # Find a beacon to determine were is the start of each group
@@ -62,8 +64,11 @@ def data_extractor(path, TD, truespectre=True):  # Extracts data from designated
         data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
         # Checking filtering status
         if correction_checker:
+            # Input for total points (TD) in the inital datas :
+            total_points = ask_for_number("Please input the total number of points (real + imaginary) the file have : ")
+
             # Filtering
-            data = data_completer(TD, data, grpdly, truespectre)
+            data = data_completer(total_points, data, grpdly, from_emma)
         else:
             messagebox.showwarning(title="Filtering impossible", message="Filtering impossible due to missing \'GRPDLY\' argument")
         return data
@@ -101,22 +106,51 @@ def header_creator(table):
     return output_file_header
 
 
-def data_completer(TD, data, nbr_of_filtered, truespectre):
+def data_completer(TD, data, nbr_of_filtered, from_emma):
     """Execute the filtration depending of if it has already be done"""
-    if len(data) * 2 != TD and truespectre:  # case if already filtered
+    if len(data) * 2 != TD and from_emma:  # case if already filtered
         print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
-    elif truespectre:  # case if not filtered
+    elif from_emma:  # case if not filtered
         print(f"Filtering {nbr_of_filtered} first points...")
         data = data[nbr_of_filtered:]
         print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
-    elif not truespectre:  # case if artificial FID
+    elif not from_emma:  # case if artificial FID
         print(f"Correcting {nbr_of_filtered} last points...")
         data = data[:nbr_of_filtered]
         print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
     return data
+
+
+def ask_for_number(title: str):
+    """ Wisely use of tkinter to get an int"""
+
+    # Configuration of tkinter window
+    master = tk.Tk()
+    tk.Label(master, text=title).grid(row=0)
+    e2 = tk.Entry(master)
+    e2.grid(row=2)
+    tk.Button(master,
+              text='Validate !',
+              command=master.quit).grid(row=3,
+                                        column=0,
+                                        sticky=tk.W,
+                                        pady=4)
+    os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+    master.attributes("-topmost", True)
+    master.attributes("-topmost", False)
+    master.mainloop()
+    # Check if input is an int
+    if e2.get().isdigit():
+        result = int(e2.get())
+        master.destroy()
+        return result
+    else:
+        # Remove the window in use and put a new one
+        master.destroy()
+        ask_for_number(title)
