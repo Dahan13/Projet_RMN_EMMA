@@ -15,8 +15,8 @@ def write_file(module, argument, output_path):
 def check_filepath(filepath, action: str) -> str:
     """ Check if provided filepath is valid, take an argument to specify which type of path it needs. """
 
-    while filepath == "" or filepath is None:
-        messagebox.showwarning(title="Warning !", message="The path you provided seems to be wrong, please correct it !")
+    while not filepath.lower().endswith('.txt'):
+        messagebox.showwarning(title="Warning !", message="This is not a text file, please correct it !")
         if action == "open":
             filepath = filedialog.askopenfilename(title="Please select the text document to open.", defaultextension=".txt")
         elif action == "save":
@@ -95,5 +95,4 @@ def main_start():
     print(f"\n#=====#\nFile sucessfully written as \"{output_path}\", no fatal error.\n#=====#\n")
 
 
-#main_start()
-two_buttons_choice()
+main_start()
