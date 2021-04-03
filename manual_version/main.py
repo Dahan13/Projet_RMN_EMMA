@@ -15,13 +15,15 @@ def write_file(module, argument, output_path):
 def check_filepath(filepath, action: str) -> str:
     """ Check if provided filepath is valid, take an argument to specify which type of path it needs. """
 
-    while not filepath.lower().endswith('.txt'):
+    while not filepath.lower().endswith('.txt') and not(filepath == "" or filepath is None):
+        
         messagebox.showwarning(title="Warning !", message="This is not a text file, please correct it !")
         if action == "open":
             filepath = filedialog.askopenfilename(title="Please select the text document to open.", defaultextension=".txt")
         elif action == "save":
             filepath = filedialog.asksaveasfilename(title="Please select save location", defaultextension=".txt")
-
+    if filepath == "" or filepath is None :
+            raise PermissionError
     return filepath
 
 
