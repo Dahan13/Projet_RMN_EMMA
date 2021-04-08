@@ -3,6 +3,9 @@ import shaped_pulse
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
 import tkinter as tk
+import os
+
+from_specter = None
 
 
 def write_file(module, argument, output_path):
@@ -15,15 +18,15 @@ def write_file(module, argument, output_path):
 def check_filepath(filepath, action: str) -> str:
     """ Check if provided filepath is valid, take an argument to specify which type of path it needs. """
 
-    while not filepath.lower().endswith('.txt') and not(filepath == "" or filepath is None):
-        
+    while not filepath.lower().endswith('.txt') and not (filepath == "" or filepath is None):
+
         messagebox.showwarning(title="Warning !", message="This is not a text file, please correct it !")
         if action == "open":
             filepath = filedialog.askopenfilename(title="Please select the text document to open.", defaultextension=".txt")
         elif action == "save":
             filepath = filedialog.asksaveasfilename(title="Please select save location", defaultextension=".txt")
-    if filepath == "" or filepath is None :
-            raise PermissionError
+    if filepath == "" or filepath is None:
+        raise PermissionError("\n### \nUser interrupt \n###\n ")
     return filepath
 
 
@@ -47,6 +50,12 @@ def two_buttons_choice():
 
     label.pack()
     window.mainloop()
+
+
+def __is_from_specter(fenetre):
+    global from_specter
+    from_specter = True
+    fenetre.quit()
 
 
 def ask_open_file(title, extension) -> str:
@@ -82,8 +91,17 @@ def main_start():
     filename = ask_open_file("Please select the text document to open.", ".txt")
 
     # Handle the calculus and create the new data
+    two_buttons_choice()
+    # Dev log
+    if from_specter:
+        print("Processing from a FID created from a specter EXPERIMENTAL")
+    elif not from_specter:
+        print("Currently analysing a normal FID (ANALOG/DIGITAL)")
+    elif from_specter is None:
+        raise ValueError("\n\n WARNING WARNING ! \n#===#\n Wrong value detected for \'from_specter\' variable, please contact the devs")
+
+    datatable = data_handling.data_extractor(filename, from_specter)
     print("Creating Shaped pulse...")
-    datatable = data_handling.data_extractor(filename)
     module, argument = shaped_pulse.make_number_complex(datatable)
 
     # Make the user choose path & name for the newly created document
