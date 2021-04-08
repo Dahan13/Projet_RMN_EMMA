@@ -123,21 +123,31 @@ def data_completer(TD, data, nbr_of_filtered, from_spectre):
     return data
 
 
-def ask_for_number(title: str):
-    """ Wisely use of tkinter to get an int"""
+def ask_for_number(title: str, optionnal_line: str = ""):
+    """ Wise use of tkinter to get an int"""
 
     # Configuration of tkinter window
-    master = tk.Tk()
-    tk.Label(master, text=title).grid(row=0)
+    master = tk.Tk(className="Number of points to analyse")
+    master['bg'] = '#333333'
+    tk.Label(
+        master,
+        text=title + f"\n{optionnal_line}",
+        foreground="#EEEEEE",  # Set the text color to white
+        background="#333333",  # Set the background color to black
+        ).grid(row=0)
     e2 = tk.Entry(master)
     e2.grid(row=2)
     tk.Button(master,
               text='Validate !',
+              foreground="#EEEEEE",  # Set the text color to white
+              background="#333333",  # Set the background color to black
               command=master.quit).grid(row=3,
-                                        column=0,
+                                        column=1,
                                         sticky=tk.W,
-                                        pady=4)
+                                        pady=4,
+                                        padx=4)
     os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+    print("Ignore error, it's meant for macOS.")
     master.attributes("-topmost", True)
     master.attributes("-topmost", False)
     master.mainloop()
@@ -149,4 +159,4 @@ def ask_for_number(title: str):
     else:
         # Remove the window in use and put a new one
         master.destroy()
-        ask_for_number(title)
+        ask_for_number(title, optionnal_line)
