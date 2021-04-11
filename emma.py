@@ -46,17 +46,13 @@ if mode == 'ht':
 
     spectre_complex = hilbert(real_spectre)
 
+    # Passage au complexe conjugué car spectre en entrée
+    spectre_complex_real = np.real(spectre_complex)
+    spectre_complex_imag = np.imag(spectre_complex)
+    spectre_complex = np.array([complex(spectre_complex_real[i], - spectre_complex_imag[i]) for i in range(n)])
+
     spectre = np.fft.ifftshift(spectre_complex)
-
     signal = np.fft.ifft(spectre)
-    signal = np.flip(signal)  # Inversion de tous les termes de la liste
-
-    # Passage de la partie imaginaire à l'opposé pour avoir les mêmes propriétés de sortie que le mode ifft
-
-    signal_real = np.real(signal)
-    signal_imaginary = np.imag(signal)
-
-    signal = np.array([complex(signal_real[i], - signal_imaginary[i]) for i in range(n)])
 
     for i in signal:
         print(i)
