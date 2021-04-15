@@ -116,7 +116,7 @@ def data_completer(TD, data, nbr_of_filtered, from_spectre):
             data = np.append(data, complex(0, 0))
     elif from_spectre:  # case if FID created from spectre
         print(f"Correcting {nbr_of_filtered} last points...")
-        data = data[:nbr_of_filtered]
+        data = data[:-nbr_of_filtered]
         print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
