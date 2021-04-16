@@ -61,7 +61,10 @@ def data_extractor(path, from_spectre=False):  # Extracts data from designated f
         # Checking filtering status
         if filtrable:
             # Input for total points (TD) in the inital datas :
-            total_points = ask_for_number("Please input the total number of points (real + imaginary) the file have : ", f"{grpdly} points will be edited")
+            function_output = ask_for_number("Please input number of points that need to be filtered :", grpdly)
+            total_points = function_output[0]
+            grpdly = function_output[1]
+            print(total_points, grpdly)
 
             # Filtering
             data = data_completer(total_points, data, grpdly, from_spectre)
@@ -123,40 +126,49 @@ def data_completer(TD, data, nbr_of_filtered, from_spectre):
     return data
 
 
-def ask_for_number(title: str, optionnal_line: str = ""):
+def ask_for_number(title: str, default_grpdly: int):
     """ Wise use of tkinter to get an int"""
 
     # Configuration of tkinter window
     master = tk.Tk(className="Number of points to analyse")
-    master['bg'] = '#333333'
     tk.Label(
         master,
-        text=title + f"\n{optionnal_line}",
-        foreground="#EEEEEE",  # Set the text color to white
-        background="#333333",  # Set the background color to black
+        text=title,
         ).grid(row=0)
+
+    tk.Label(
+        master,
+        text="Number of points that will be filtered (GRPDLY, number of real or imaginary) :"
+    ).grid(row=1)
+
+    tk.Label(
+        master,
+        text="Total Number of points wanted at the end (real + imaginary) :"
+    ).grid(row=3)
     e2 = tk.Entry(master)
-    e2.grid(row=2)
+    e2.grid(row=4)
+    e3 = tk.Entry(master)
+    e3.insert(0, default_grpdly)
+    e3.grid(row=2)
     tk.Button(master,
               text='Validate !',
-              foreground="#EEEEEE",  # Set the text color to white
-              background="#333333",  # Set the background color to black
-              command=master.quit).grid(row=3,
+              command=master.quit).grid(row=5,
                                         column=1,
                                         sticky=tk.W,
                                         pady=4,
                                         padx=4)
     os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-    print("Ignore error, it's meant for macOS.")
+    print("If you get an error, ignore it, it's meant for macOS.")
     master.attributes("-topmost", True)
     master.attributes("-topmost", False)
     master.mainloop()
     # Check if input is an int
-    if e2.get().isdigit():
+    if e2.get().isdigit() and e3.get().isdigit():
         result = int(e2.get())
+        grpdly = int(e3.get())
         master.destroy()
-        return result
+        return result, grpdly
     else:
         # Remove the window in use and put a new one
         master.destroy()
-        ask_for_number(title, optionnal_line)
+        ask_for_number(title, default_grpdly)

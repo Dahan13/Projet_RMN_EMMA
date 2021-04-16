@@ -33,14 +33,11 @@ def check_filepath(filepath, action: str) -> str:
 def two_buttons_choice():
     """ Ask user to choose between to option via graphic mode """
     window = tk.Tk(className="Method option")
-    window['bg'] = '#333333'
     global from_specter
     from_specter = False
     label = tk.Label(
         window,
         text="Please choose the right exportation structure :",
-        foreground="#EEEEEE",  # Set the text color to white
-        background="#333333",  # Set the background color to black
         width=50,
         height=3
     ).pack()
@@ -48,8 +45,6 @@ def two_buttons_choice():
     button1 = tk.Button(
         window,
         text='Normal FID (ANALOG/DIGITAL)',
-        foreground="#EEEEEE",
-        background="#333333",
         height=1,
         padx=1,
         pady=1,
@@ -58,14 +53,12 @@ def two_buttons_choice():
     button2 = tk.Button(
         window,
         text='FID from artificial spectre (i.e was processed by TopSpin)',
-        foreground="#EEEEEE",
-        background="#333333",
         height=1,
         padx=1,
         pady=1,
         command=lambda: __is_from_specter(window)).pack()
     os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-    print("Ignore error, it's meant for macOS.")
+    print("If you get an error, ignore it, it's meant for macOS.")
     window.attributes("-topmost", True)
     window.attributes("-topmost", False)
     window.mainloop()
