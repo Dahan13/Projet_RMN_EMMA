@@ -1,6 +1,7 @@
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
 import os
+import sys
 import shutil
 
 
@@ -32,11 +33,7 @@ def main():
         topspin_path = ask_directory("Select Topspin main directory")
     print("Topspin directory set to:\n", topspin_path)
 
-    python_path = ask_open_file("Select Python executable")
-    # Safeguard, if filename is invalid (not a string)
-    while python_path == "" or python_path is None:
-        messagebox.showwarning(title="Warning !", message="Please select a valid path !")
-        python_path = ask_open_file("Select Python file")
+    python_path = os.path.dirname(sys.executable) + "/python.exe"
     print("Python path set to:\n", python_path)
 
     # Create path
@@ -54,7 +51,7 @@ def main():
     print("EMMA starter successfully moved to: \n", emma_starter_target)
 
     # Writting settings
-    f = open(f"{topspin_path + emma_directory}emma_settings.txt", "w")
+    f = open(f"{emma_directory}emma_settings.txt", "w")
     f.write("# OS:\n")
     f.write("Windows\n")
     f.write("# Topspin path: \n")
