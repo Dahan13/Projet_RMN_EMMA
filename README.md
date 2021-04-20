@@ -1,7 +1,7 @@
 # Projet_RMN_EMMA
 
-Ce programme nécessite une installation à jour de Python 3.9.x avec la bibliothèque NumPy, TkinTer et SciPy
-## Version intégré :
+Ce programme nécessite une installation à jour de Python 3.9.x avec les bibliothèque NumPy, TkinTer et SciPy
+## Version intégrée :
 
 
 NE FONCTIONNE QUE SOUS WINDOWS POUR L'INSTANT !
@@ -21,4 +21,4 @@ Installation :
 
 Pour la lancer, lancer le fichier main.py situé dans le dossier manual_version. La version manuelle fonctionne normalement sur tous les OS sans problèmes. 
 
-Pour s'en servir, vous n'avez besoin que d'une FID exporté par TopSpin. Nous ne prenons pas en charge des FID exporté par d'autres logiciels.
+Pour s'en servir, vous n'avez besoin que d'une FID exportée par TopSpin. Nous ne prenons pas en charge des FID exportée par d'autres logiciels.
