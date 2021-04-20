@@ -1,5 +1,9 @@
 # Projet_RMN_EMMA
 
+Ce programme nécessite une installation à jour de Python 3.9.x avec la bibliothèque NumPy, TkinTer et SciPy
+## Version intégré :
+
+
 NE FONCTIONNE QUE SOUS WINDOWS POUR L'INSTANT !
 
 Pour la version intégrée à TopSpin : 
@@ -13,5 +17,8 @@ Installation :
 - actualiser les chemins de fichiers CPYTHON_BIN et CPYTHON_LIB dans emma_spectrum_to_shape.py
 - ouvrir le spectre dans TopSpin, lancer la commande edpy et exécuter emma_spectrum_to_shape.py (ou la commande "xpy emma_spectrum_to_shape.py")
 
-Pour la version manuelle :
+## Version manuelle :
 
+Pour la lancer, lancer le fichier main.py situé dans le dossier manual_version. La version manuelle fonctionne normalement sur tous les OS sans problèmes. 
+
+Pour s'en servir, vous n'avez besoin que d'une FID exporté par TopSpin. Nous ne prenons pas en charge des FID exporté par d'autres logiciels.
