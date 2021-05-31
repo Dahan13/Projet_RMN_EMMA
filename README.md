@@ -12,9 +12,9 @@ Prend en charge la génération de shape à partir d'un spectre (partie réelle 
 
 Installation :
 - placer emma_spectrum_to_shape.py dans ...\Topspin4\exp\stan\nmr\py\user
-- créer le nouveau dossier ...\Topspin4\exp\stan\nmr\py\emma
-- déplacer emma.py dans  ...\Programmes\Topspin4\exp\stan\nmr\py\emma
-- actualiser les chemins de fichiers CPYTHON_BIN et CPYTHON_LIB dans emma_spectrum_to_shape.py
+- créer le nouveau dossier ...users\(username)\Documents\EMMA
+- déplacer emma.py dans  ...users\(username)\Documents\EMMA
+- actualiser les chemins de fichiers CPYTHON_BIN et CPYTHON_LIB dans emma_spectrum_to_shape.py, en portant une attention particulière à respecter les / ou \.
 - ouvrir le spectre dans TopSpin, lancer la commande edpy et exécuter emma_spectrum_to_shape.py (ou la commande "xpy emma_spectrum_to_shape.py")
 
 ## Version manuelle :

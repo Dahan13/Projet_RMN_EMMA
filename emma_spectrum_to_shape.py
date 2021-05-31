@@ -11,7 +11,7 @@ CPYTHON_BIN = (
         'C:/Windows/System32/cmd.exe /C '
         + 'C:\Users\Lucas\AppData\Local\Programs\Python\Python39\python.exe')
         
-CPYTHON_LIB = 'D:/Programmes/Topspin4/exp/stan/nmr/py/emma/'
+CPYTHON_LIB = 'C:/Users/lucas/Documents/EMMA/'
 
 CPYTHON_FILE = CPYTHON_LIB + FILE
 COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
