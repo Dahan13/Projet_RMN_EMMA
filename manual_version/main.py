@@ -3,6 +3,9 @@ import shaped_pulse
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
 import tkinter as tk
+import os
+
+from_specter = None
 
 
 def write_file(module, argument, output_path):
@@ -15,36 +18,56 @@ def write_file(module, argument, output_path):
 def check_filepath(filepath, action: str) -> str:
     """ Check if provided filepath is valid, take an argument to specify which type of path it needs. """
 
-    while filepath == "" or filepath is None:
-        messagebox.showwarning(title="Warning !", message="The path you provided seems to be wrong, please correct it !")
+    while not filepath.lower().endswith('.txt') and not (filepath == "" or filepath is None):
+
+        messagebox.showwarning(title="Warning !", message="This is not a text file, please correct it !")
         if action == "open":
             filepath = filedialog.askopenfilename(title="Please select the text document to open.", defaultextension=".txt")
         elif action == "save":
             filepath = filedialog.asksaveasfilename(title="Please select save location", defaultextension=".txt")
-
+    if filepath == "" or filepath is None:
+        raise PermissionError("\n### \nUser interrupt \n###\n ")
     return filepath
 
 
 def two_buttons_choice():
     """ Ask user to choose between to option via graphic mode """
-    window = tk.Tk()
+    window = tk.Tk(className="Method option")
+    global from_specter
+    from_specter = False
     label = tk.Label(
-        text="You shall choose between those options puny mortal :",
-        foreground="#EEEEEE",  # Set the text color to white
-        background="#333333",  # Set the background color to black
-        width=1000,
-        height=1000
-    )
+        window,
+        text="Please choose the right exportation structure :",
+        width=50,
+        height=3
+    ).pack()
 
-    button = tk.Button(
-        text="Option 1:",
-        width=25,
-        height=5,
-        fg="#EEEEEE",
-    )
+    button1 = tk.Button(
+        window,
+        text='Normal FID (ANALOG/DIGITAL)',
+        height=1,
+        padx=1,
+        pady=1,
+        command=lambda: window.quit()).pack()
 
-    label.pack()
+    button2 = tk.Button(
+        window,
+        text='FID from artificial spectre (i.e was processed by TopSpin)',
+        height=1,
+        padx=1,
+        pady=1,
+        command=lambda: __is_from_specter(window)).pack()
+    os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+    print("If you get an error, ignore it, it's meant for macOS.")
+    window.attributes("-topmost", True)
+    window.attributes("-topmost", False)
     window.mainloop()
+
+
+def __is_from_specter(fenetre):
+    global from_specter
+    from_specter = True
+    fenetre.quit()
 
 
 def ask_open_file(title, extension) -> str:
@@ -80,8 +103,17 @@ def main_start():
     filename = ask_open_file("Please select the text document to open.", ".txt")
 
     # Handle the calculus and create the new data
+    two_buttons_choice()
+    # Dev log
+    if from_specter:
+        print("Processing from a FID created from a specter EXPERIMENTAL")
+    elif not from_specter:
+        print("Currently analysing a normal FID (ANALOG/DIGITAL)")
+    elif from_specter is None:
+        raise ValueError("\n\n WARNING WARNING ! \n#===#\n Wrong value detected for \'from_specter\' variable, please contact the devs")
+
+    datatable = data_handling.data_extractor(filename, from_specter)
     print("Creating Shaped pulse...")
-    datatable = data_handling.data_extractor(filename)
     module, argument = shaped_pulse.make_number_complex(datatable)
 
     # Make the user choose path & name for the newly created document
@@ -95,5 +127,4 @@ def main_start():
     print(f"\n#=====#\nFile sucessfully written as \"{output_path}\", no fatal error.\n#=====#\n")
 
 
-#main_start()
-two_buttons_choice()
+main_start()

@@ -7,7 +7,7 @@ import tkinter as tk
 import os
 
 
-def data_extractor(path, from_emma=True):  # Extracts data from designated file
+def data_extractor(path, from_spectre=False):  # Extracts data from designated file
 
     """Takes in the JCAMP file's path, then extracts and returns real and imaginary parts as two np.array"""
 
@@ -18,11 +18,12 @@ def data_extractor(path, from_emma=True):  # Extracts data from designated file
         for line in f:
             text = str(line)
             # Find total number of point to be filtered
-            if re.findall(r"GRPDLY", text) and from_emma:
+            if re.findall(r"GRPDLY", text):
                 grpdly = re.findall(r"GRPDLY=+[ ]+\d.*\d", text)
                 grpdly = float(grpdly[0].split("= ")[1])
-                correction_checker = (grpdly != -1)  # check if the argument has a usable value
+                filtrable = (grpdly > 0)  # check if the argument has a usable value
                 # Round the value of grpdly at the correct value
+                print(grpdly)
                 grpdly = math.floor(grpdly)
                 if grpdly % 2 != 0:
                     grpdly += 1
@@ -32,11 +33,6 @@ def data_extractor(path, from_emma=True):  # Extracts data from designated file
                 f.readline()
                 f.readline()
                 break
-
-        if not from_emma:
-            # find a way to calculate the GRPDLY
-            # grpdly = ask_value_from_user
-            correction_checker = True
 
         # Find a beacon to determine were is the start of each group
         first_line = re.findall(r"\d+[ ]+[-]*\d+", f.readline())
@@ -63,12 +59,15 @@ def data_extractor(path, from_emma=True):  # Extracts data from designated file
         # Filling final dataset with correct values
         data = np.array([complex(real_data[i], imaginary_data[i]) for i in range(len(real_data))])
         # Checking filtering status
-        if correction_checker:
+        if filtrable:
             # Input for total points (TD) in the inital datas :
-            total_points = ask_for_number("Please input the total number of points (real + imaginary) the file have : ")
+            function_output = ask_for_number("Please input number of points that need to be filtered :", grpdly)
+            total_points = function_output[0]
+            grpdly = function_output[1]
+            print(total_points, grpdly)
 
             # Filtering
-            data = data_completer(total_points, data, grpdly, from_emma)
+            data = data_completer(total_points, data, grpdly, from_spectre)
         else:
             messagebox.showwarning(title="Filtering impossible", message="Filtering impossible due to missing \'GRPDLY\' argument")
         return data
@@ -106,51 +105,70 @@ def header_creator(table):
     return output_file_header
 
 
-def data_completer(TD, data, nbr_of_filtered, from_emma):
+def data_completer(TD, data, nbr_of_filtered, from_spectre):
     """Execute the filtration depending of if it has already be done"""
-    if len(data) * 2 != TD and from_emma:  # case if already filtered
+    if len(data) * 2 < TD and not from_spectre:  # case if already filtered
         print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
-    elif from_emma:  # case if not filtered
+    elif not from_spectre:  # case if not filtered
         print(f"Filtering {nbr_of_filtered} first points...")
         data = data[nbr_of_filtered:]
         print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
-    elif not from_emma:  # case if artificial FID
+    elif from_spectre:  # case if FID created from spectre
         print(f"Correcting {nbr_of_filtered} last points...")
-        data = data[:nbr_of_filtered]
+        data = data[:-nbr_of_filtered]
         print(f"Completing with {nbr_of_filtered} points...")
         for i in range(nbr_of_filtered):
             data = np.append(data, complex(0, 0))
     return data
 
 
-def ask_for_number(title: str):
-    """ Wisely use of tkinter to get an int"""
+def ask_for_number(title: str, default_grpdly: int):
+    """ Wise use of tkinter to get an int"""
 
     # Configuration of tkinter window
-    master = tk.Tk()
-    tk.Label(master, text=title).grid(row=0)
+    master = tk.Tk(className="Number of points to analyse")
+    tk.Label(
+        master,
+        text=title,
+        ).grid(row=0)
+
+    tk.Label(
+        master,
+        text="Number of points that will be filtered (GRPDLY, number of real or imaginary) :"
+    ).grid(row=1)
+
+    tk.Label(
+        master,
+        text="Total Number of points wanted at the end (real + imaginary) :"
+    ).grid(row=3)
     e2 = tk.Entry(master)
-    e2.grid(row=2)
+    e2.grid(row=4)
+    e3 = tk.Entry(master)
+    e3.insert(0, default_grpdly)
+    e3.grid(row=2)
     tk.Button(master,
               text='Validate !',
-              command=master.quit).grid(row=3,
-                                        column=0,
+              command=master.quit).grid(row=5,
+                                        column=1,
                                         sticky=tk.W,
-                                        pady=4)
+                                        pady=4,
+                                        padx=4)
     os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+    print("If you get an error, ignore it, it's meant for macOS.")
     master.attributes("-topmost", True)
     master.attributes("-topmost", False)
     master.mainloop()
     # Check if input is an int
-    if e2.get().isdigit():
+    if e2.get().isdigit() and e3.get().isdigit():
         result = int(e2.get())
+        grpdly = int(e3.get())
         master.destroy()
-        return result
+        return result, grpdly
     else:
         # Remove the window in use and put a new one
         master.destroy()
-        ask_for_number(title)
+        ask_for_number(title, default_grpdly)
