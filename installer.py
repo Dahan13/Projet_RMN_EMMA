@@ -6,6 +6,7 @@ import shutil
 import ctypes.wintypes
 import configparser
 import platform
+import re
 
 
 def ask_directory(title: str) -> str:
@@ -30,8 +31,8 @@ def main():
 
     # Source
     user_directory = r"/exp/stan/nmr/py/user/"
-    emma_starter_origin = r"./emma_spectrum_to_shape.py"
-    emma_origin = r"./emma.py"
+    emma_starter_origin = r"./emma.py"
+    emma_origin = r"./emma_traitement.py"
     documents_path = get_documents_path()
 
     # Info from user
@@ -50,16 +51,8 @@ def main():
     emma_target = emma_directory + emma_origin[2:]
     emma_starter_target = topspin_path + user_directory + emma_starter_origin[2:]
 
-    # Creating directory and moving files
-    if not os.path.exists(emma_directory):
-        os.mkdir(emma_directory)
-        print("EMMA directory created at:\n", emma_directory)
-    shutil.copy(emma_origin, emma_target)
-    print("EMMA process successfully moved to: \n", emma_target)
-    shutil.copy(emma_starter_origin, emma_starter_target)
-    print("EMMA starter successfully moved to: \n", emma_starter_target)
-
-    # Setting up variables :
+    
+    # Setting up settings file data :
 
     config = configparser.ConfigParser()
     # Getting OS informations
@@ -76,10 +69,36 @@ def main():
     config.set('PATHS', 'emma_starter', str(emma_starter_target))
     config.set('PATHS', 'emma_process', str(emma_target))
 
-    # Writing settings
+    
+    # Preparing emma.py for transfer :
+    emma = open(emma_starter_origin, 'r')
+    pattern = re.compile("path_to_settings.*")
+    lines = emma.readlines()
+    index = 0
+    for line in lines:
+        if pattern.match(line):
+            break
+        else:
+            index += 1
+    lines[index] = f"path_to_settings = \'{emma_directory + 'emma_settings.ini'}\'\n"
+    emma.close()
+    new_emma = open(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", 'w')
+    new_emma.writelines(lines)
+    new_emma.close()
+
+    
+    # Creating directory and moving files
+    if not os.path.exists(emma_directory):
+        os.mkdir(emma_directory)
+        print("EMMA directory created at:\n", emma_directory)
+    shutil.copy(emma_origin, emma_target)
+    print("EMMA process successfully moved to: \n", emma_target)
+    shutil.copy(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", emma_starter_target)
+    print("EMMA starter successfully moved to: \n", emma_starter_target)
     f = open(f"{emma_directory}emma_settings.ini", "w")
     config.write(f)
     f.close()
+
 
     # Finishing
     print(f"\n\n################\nSettings saved at : \'{emma_directory + 'emma_settings.ini'}\'.\nEdit this file at your own risks, to actualize settings, start the installer again.\n################")
