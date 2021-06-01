@@ -1,3 +1,17 @@
+# First, we check that all required modules are installed on the computer :
+try:
+    import numpy
+    import scipy
+except ImportError:
+    raise ImportError("\n\nWarning !\nPython Modules \'numpy\' and \'scipy\' are mandatory !\n To install each one of them, type \'pip install name_of_the_module\' in the terminal\n")
+
+try:
+    import tkinter
+except ImportError:
+    raise ImportError("\n\nWarning !\nTkinter python library is not installed !\nFor Windows users, your python interpreter version is wrong/broken.\nFor Mac/Linux/Debian users, type \'sudo apt-get install python3-tk\' in a terminal.")
+# From now on each module should be installed
+
+
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
 import os
@@ -88,6 +102,7 @@ def main():
             index += 1
     lines[index] = f"path_to_settings = \'{emma_directory + 'emma_settings.ini'}\'\n"
     emma.close()
+    # We are making a copy of emma.py that we will copy after updating inside it's path to the settings doc
     new_emma = open(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", 'w')
     new_emma.writelines(lines)
     new_emma.close()
