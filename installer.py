@@ -27,8 +27,13 @@ def get_documents_path() -> str:
     ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
     return buf.value
 
-def main():
+def get_system32_location() -> str:
+    """This function give the path to system32 folder"""
+    is_wow64 = (platform.architecture()[0] == '32bit' and 'ProgramFiles(x86)' in os.environ)
+    system32 = os.path.join(os.environ['SystemRoot'], 'SysNative' if is_wow64 else 'System32')
+    return system32
 
+def main():
     # Source
     user_directory = r"/exp/stan/nmr/py/user/"
     emma_starter_origin = r"./emma.py"
@@ -68,6 +73,7 @@ def main():
     config.set('PATHS', 'emma_directory', str(emma_directory))
     config.set('PATHS', 'emma_starter', str(emma_starter_target))
     config.set('PATHS', 'emma_process', str(emma_target))
+    config.set('PATHS', 'system32', str(get_system32_location()))
 
     
     # Preparing emma.py for transfer :
@@ -101,7 +107,7 @@ def main():
 
 
     # Finishing
-    print(f"\n\n################\nSettings saved at : \'{emma_directory + 'emma_settings.ini'}\'.\nEdit this file at your own risks, to actualize settings, start the installer again.\n################")
+    print(f"\n\n#==============#\nSettings saved at : \'{emma_directory + 'emma_settings.ini'}\'.\nEdit this file at your own risks, to actualize settings, start the installer again.\n#==============#\n")
 
 
 main()

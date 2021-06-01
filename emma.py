@@ -5,7 +5,6 @@ import cmath
 from posixpath import split
 from subprocess import Popen, PIPE
 import re
-import os, sys
 
 COMMAND_LINE = []
 FILE = 'emma_traitement.py'
@@ -23,16 +22,14 @@ if path_to_settings:
         if not (pattern.match(line)) and len(line.split(" = ")) == 2:
             paths[line.split(" = ")[0]] = line.split(" = ")[1][:(len(line.split(" = ")[1]) - 1)]
         line = f.readline()
-    MSG(str(paths))
 
     # Now we will use extracted values to create the command
-    CPYTHON_BIN = ('C:/Windows/System32/cmd.exe /C ' + paths['python'])
+    CPYTHON_BIN = (paths['system32'] + '/cmd.exe /C ' + paths['python'])
     CPYTHON_LIB = paths['emma_directory']
     CPYTHON_FILE = CPYTHON_LIB + FILE
     COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
 
     COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
-    MSG(COMMAND_LINE)
 else:
     # Read each comment after the character '#' to know what to do :
     # Put here the path to python3, it's usually /usr/bin/python3 but here may be some changes depending of your system
