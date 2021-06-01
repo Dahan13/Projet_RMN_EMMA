@@ -8,13 +8,14 @@ import re
 
 COMMAND_LINE = []
 FILE = 'emma_traitement.py'
-# Don't touch this line, it's meant for the windows installer, touching it with result in breaking the program for every system
+
+# Don't touch the line below, it's meant for the windows installer, touching it with result in breaking the program for every system
 path_to_settings = None
 ###############
 
-if path_to_settings:
+if path_to_settings: # if there is a settings file set up by the installer
+    # First we extract all settings from the settings file
     paths = {}
-    # First we extract values from settings file and we put all of them in paths as a dictionary
     f = open(path_to_settings, 'r')
     pattern = re.compile("\[.*")
     line = f.readline()
@@ -23,7 +24,7 @@ if path_to_settings:
             paths[line.split(" = ")[0]] = line.split(" = ")[1][:(len(line.split(" = ")[1]) - 1)]
         line = f.readline()
 
-    # Now we will use extracted values to create the command
+    # Now we will use extracted settings to create the command
     CPYTHON_BIN = (paths['system32'] + '/cmd.exe /C ' + paths['python'])
     CPYTHON_LIB = paths['emma_directory']
     CPYTHON_FILE = CPYTHON_LIB + FILE
@@ -32,17 +33,17 @@ if path_to_settings:
     COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
 else:
     # Read each comment after the character '#' to know what to do :
-    # Put here the path to python3, it's usually /usr/bin/python3 but here may be some changes depending of your system
+
+    # Put here the path to python3, it's usually /usr/bin/python3 but there may be some changes depending of your system
     CPYTHON_BIN = ('/path/to/python3')
         
-    # Put between the ' characters the path to the folder where emma_traitement.py is located   
+    # Put the path to the folder where emma_traitement.py is located   
     CPYTHON_LIB = '/path/to/EMMA'
 
     CPYTHON_FILE = CPYTHON_LIB + FILE
     COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
 
     COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
-    MSG(COMMAND_LINE)
 
 def retrieve_spectrum():
     real = GETPROCDATA(-100000, 100000)
