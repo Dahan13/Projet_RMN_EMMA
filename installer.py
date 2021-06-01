@@ -45,7 +45,7 @@ def get_system32_location() -> str:
     """This function give the path to system32 folder"""
     is_wow64 = (platform.architecture()[0] == '32bit' and 'ProgramFiles(x86)' in os.environ)
     system32 = os.path.join(os.environ['SystemRoot'], 'SysNative' if is_wow64 else 'System32')
-    return system32
+    return system32.replace("\\", "/")
 
 def main():
     # Source
@@ -62,11 +62,11 @@ def main():
         topspin_path = ask_directory("Select Topspin main directory")
     print("Topspin directory set to:\n", topspin_path)
 
-    python_path = os.path.dirname(sys.executable) + "/python.exe"
+    python_path = (os.path.dirname(sys.executable) + "\python.exe").replace("/", "\\")
     print("Python path set to:\n", python_path)
 
     # Create path
-    emma_directory = documents_path + '/EMMA/'
+    emma_directory = (documents_path + '/EMMA/').replace("\\", "/")
     emma_target = emma_directory + emma_origin[2:]
     emma_starter_target = topspin_path + user_directory + emma_starter_origin[2:]
 

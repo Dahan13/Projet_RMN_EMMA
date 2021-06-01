@@ -2,13 +2,13 @@
 
 **Table des matières :**
 <!-- vscode-markdown-toc -->
-* 1. [Version intégrée à TopSpin:](#VersionintgreTopSpin:)
+* 1. [Version intégrée à TopSpin](#VersionintgreTopSpin:)
 	* 1.1. [Installation automatique du programme](#Installationautomatiqueduprogramme)
-		* 1.1.1. [Prérequis :](#Prrequis:)
-		* 1.1.2. [Installation :](#Installation:)
+		* 1.1.1. [Prérequis](#Prrequis:)
+		* 1.1.2. [Installation](#Installation:)
 	* 1.2. [Installation manuelle du programme](#Installationmanuelleduprogramme)
 	* 1.3. [Utilisation du programme](#Utilisationduprogramme)
-* 2. [Version manuelle :](#Versionmanuelle:)
+* 2. [Version manuelle](#Versionmanuelle:)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
