@@ -1,0 +1,93 @@
+import tkinter as tk
+
+class Wizard(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+        self.current_step = None
+        self.steps = [Step1(self), Step2(self), Step3(self), Step4(self)]
+
+        self.button_frame = tk.Frame(self, bd=1, relief="raised")
+        self.content_frame = tk.Frame(self)
+
+        self.back_button = tk.Button(self.button_frame, text="<< Back", command=self.back)
+        self.next_button = tk.Button(self.button_frame, text="Next >>", command=self.next)
+        self.finish_button = tk.Button(self.button_frame, text="Finish", command=self.finish)
+
+        self.button_frame.pack(side="bottom", fill="x")
+        self.content_frame.pack(side="top", fill="both", expand=True)
+
+        self.show_step(0)
+
+    def show_step(self, step):
+
+        if self.current_step is not None:
+            # remove current step
+            current_step = self.steps[self.current_step]
+            current_step.pack_forget()
+
+        self.current_step = step
+
+        new_step = self.steps[step]
+        new_step.pack(fill="both", expand=True)
+
+        if step == 0:
+            # first step
+            self.back_button.pack_forget()
+            self.next_button.pack(side="right")
+            self.finish_button.pack_forget()
+
+        elif step == len(self.steps)-1:
+            # last step
+            self.back_button.pack(side="left")
+            self.next_button.pack_forget()
+            self.finish_button.pack(side="right")
+
+        else:
+            # all other steps
+            self.back_button.pack(side="left")
+            self.next_button.pack(side="right")
+            self.finish_button.pack_forget()
+            
+
+    def next(self):
+        self.show_step(self.current_step + 1)
+
+    def back(self):
+        self.show_step(self.current_step - 1)
+
+    def finish(self):
+        self.parent.destroy()
+
+class Step1(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        header = tk.Label(self, text="This is step 1", bd=2, relief="groove")
+        header.pack(side="top", fill="x")
+
+class Step2(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        header = tk.Label(self, text="This is step 2", bd=2, relief="groove")
+        header.pack(side="top", fill="x")
+
+class Step3(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        header = tk.Label(self, text="This is step 3", bd=2, relief="groove")
+        header.pack(side="top", fill="x")
+
+class Step4(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        header = tk.Label(self, text="This is step 4", bd=2, relief="groove")
+        header.pack(side="top", fill="x")
+
+window = tk.Tk()
+Wizard(window).pack(fill="both", expand=True)
+window.mainloop()
