@@ -6,7 +6,7 @@ except ImportError:
     raise ImportError("\n\nWarning !\nPython Modules \'numpy\' and \'scipy\' are mandatory !\n To install each one of them, type \'pip install name_of_the_module\' in the terminal\n")
 
 try:
-    import tkinter as tk
+    import tkinter
 except ImportError:
     raise ImportError("\n\nWarning !\nTkinter python library is not installed !\nFor Windows users, your python interpreter version is wrong/broken.\nFor Mac/Linux/Debian users, type \'sudo apt-get install python3-tk\' in a terminal.")
 # From now on each module should be installed
@@ -21,7 +21,6 @@ import ctypes.wintypes
 import configparser
 import platform
 import re
-import time
 
 
 def ask_directory(title: str) -> str:
@@ -49,27 +48,25 @@ def get_system32_location() -> str:
     return system32.replace("\\", "/")
 
 def main():
-    global message
-
     # Source
     user_directory = r"/exp/stan/nmr/py/user/"
     emma_starter_origin = r"./emma.py"
     emma_origin = r"./emma_traitement.py"
     documents_path = get_documents_path()
 
-    # Asking for the path to TopSpin
+    # Info from user
     topspin_path = ask_directory("Select Topspin main directory")
+    print(topspin_path)
     # Safeguard, if directory is invalid (not a string or not topspin)
-    while topspin_path == "" or topspin_path is None or not os.path.exists(topspin_path + "/topspin.cmd"):
-        if topspin_path == "" or topspin_path is None:
-            message.set(str(message.get()) + "\nThe installation process was interrupted !\nYou can now close the window and eventually launch again the installer.")
+    while topspin_path == "" or not os.path.exists(topspin_path + "/topspin.cmd"):
+        if topspin_path == "":
             raise PermissionError("\n\nUser Interrupt\n")
         messagebox.showwarning(title="Warning !", message="Please select a valid path !")
         topspin_path = ask_directory("Select Topspin main directory")
-    message.set(str(message.get()) + "Topspin directory set to : \'" + topspin_path + "\'\n")
+    print("Topspin directory set to:\n", topspin_path)
 
     python_path = (os.path.dirname(sys.executable) + "\python.exe").replace("/", "\\")
-    message.set(str(message.get()) + "\nPython path set to : \'" + python_path + "\'\n\n")
+    print("Python path set to:\n", python_path)
 
     # Create path
     emma_directory = (documents_path + '/EMMA/').replace("\\", "/")
@@ -78,7 +75,7 @@ def main():
 
     
     # Setting up settings file data :
-    message.set(str(message.get()) + "Building settings file... \n")
+
     config = configparser.ConfigParser()
     # Getting OS informations
     config.add_section('OS')
@@ -97,7 +94,6 @@ def main():
 
     
     # Preparing emma.py for transfer :
-    message.set(str(message.get()) + "Writing and copying files to corresponding directories... \n\n")
     emma = open(emma_starter_origin, 'r')
     pattern = re.compile("path_to_settings.*")
     lines = emma.readlines()
@@ -118,26 +114,18 @@ def main():
     # Creating directory and moving files
     if not os.path.exists(emma_directory):
         os.mkdir(emma_directory)
-        message.set(str(message.get()) + "EMMA directory created at : \'" + emma_directory + "\'\n")
+        print("EMMA directory created at:\n", emma_directory)
     shutil.copy(emma_origin, emma_target)
-    message.set(str(message.get()) + "EMMA process successfully moved to : \'" + emma_target + "\'\n")
+    print("EMMA process successfully moved to: \n", emma_target)
     shutil.copy(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", emma_starter_target)
-    message.set(str(message.get()) + "EMMA starter successfully moved to : \'" + emma_starter_target + "\'\n")
+    print("EMMA starter successfully moved to: \n", emma_starter_target)
     f = open(f"{emma_directory}emma_settings.ini", "w")
     config.write(f)
     f.close()
 
 
     # Finishing
-    message.set(str(message.get()) + f"\n\n__________\n\nSettings saved at : \'{emma_directory + 'emma_settings.ini'}\'.\nEdit this file at your own risks, to actualize settings, start the installer again.\n__________\n\nEverything is set up, you can now close this window !")
+    print(f"\n\n#==============#\nSettings saved at : \'{emma_directory + 'emma_settings.ini'}\'.\nEdit this file at your own risks, to actualize settings, start the installer again.\n#==============#\n")
 
 
-# Setting up installation interface
-window = tk.Tk(className="Installation interface")
-window.geometry("1000x440")
-message = tk.StringVar(window, value = "\nThis window will guide you along all the installation process !\n____________________\n\n\n Please, indicate the main folder where TopSpin is installed :\n")
-tk.Label(window, textvariable = message).pack()
-window.after(2000, main)
-window.mainloop()
-
-
+main()
