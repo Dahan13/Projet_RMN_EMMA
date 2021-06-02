@@ -1,4 +1,7 @@
-import tkinter as tk
+try:
+    import tkinter as tk
+except ImportError:
+    raise ImportError("\n\nWarning !\nTkinter python library is not installed !\nFor Windows users, your python interpreter version is wrong/broken.\nFor Mac/Linux/Debian users, type \'sudo apt-get install python3-tk\' in a terminal.")
 import tkinter.font as font
 import tkinter.filedialog as filedialog
 import tkinter.messagebox as messagebox
@@ -9,7 +12,6 @@ import ctypes.wintypes
 import configparser
 import platform
 import re
-import time
 
 path_topspin = ""
 
@@ -31,13 +33,23 @@ class Wizard(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
+
+        # Initializing some fonts for the installer
         self.title_font = font.Font(size = 22, family = 'Calibri')
         self.reg_font = font.Font(size = 11, family = 'Calibri')
         self.button_font = font.Font(size = 11, weight = 'bold')
 
         self.current_step = None
-        self.steps = [Step1(self), Step2(self), Step3(self), Step4(self)]
 
+        # Checking if required modules are installed
+        try:
+            import numpy
+            import scipy
+            self.steps = [Step1(self), Step2(self), Step3(self), Step4(self)]
+        except ImportError:
+            self.steps = [StepImportError(self)]
+
+        # Initializing all widgets
         self.button_frame = tk.Frame(self, bd=1, relief="raised")
         self.content_frame = tk.Frame(self)
 
@@ -63,7 +75,14 @@ class Wizard(tk.Frame):
         new_step = self.steps[step]
         new_step.pack(fill="both", expand=True)
 
-        if step == 0:
+        if len(self.steps) == 1:
+            # Special case
+            self.back_button.pack_forget()
+            self.next_button.pack_forget()
+            self.cancel_button.pack_forget()
+            self.finish_button.pack(side="right", padx= 20, pady = 5)
+
+        elif step == 0:
             # first step
             self.back_button.pack_forget()
             self.cancel_button.pack(side='right', padx= 20, pady = 5)
@@ -145,10 +164,11 @@ class Step2(tk.Frame):
         content2.pack(pady=20)
 
     def browse(self):
+        """This function will allow the user to browse and select TopSpin main directory"""
         global message
         global path_topspin
         path_topspin = filedialog.askdirectory(title="Specify TopSpin's main folder")
-        while  not os.path.exists(path_topspin + "/topspin.cmd"):
+        while  not os.path.exists(path_topspin + "/topspin.cmd") and path_topspin != "":
             messagebox.showwarning(title="Warning !", message="This is not TopSpin's main directory.\nLook for the directory where topspin.cmd is located !")
             path_topspin = filedialog.askdirectory(title="Specify TopSpin's main folder")
         message.set(path_topspin)
@@ -179,6 +199,7 @@ class Step3(tk.Frame):
 
     def install(self):
         global path_topspin
+        # Checking if given path to TopSpin directory was correct
         if os.path.exists(path_topspin + "/topspin.cmd"):
             self.install_button.pack_forget()
             global message2
@@ -252,10 +273,11 @@ class Step3(tk.Frame):
             f.close()
             message2.set(str(message2.get()) + "Settings file successfully wrote to : \'" + f"{emma_directory}emma_settings.ini\'\n")
             
+            # Making widget to go to next page
             end_button = tk.Button(self, text="Next >>", command=self.parent.next, font = self.parent.button_font)
             end_button.pack()
         else:
-            message2.set("Aucun chemin n'a été fourni pour le dossier de TopSpin")
+            message2.set("An invalid path has been provided for the TopSpin main directory")
         
 
 class Step4(tk.Frame):
@@ -274,6 +296,24 @@ class Step4(tk.Frame):
     Instructions on how to use the program are in the file "README.md".
         """, font = parent.reg_font, justify = "left")
         content.pack(pady=5)
+
+class StepImportError(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        header = tk.Label(self, text="Warning !", bd=2, relief="groove", font = parent.title_font)
+        header.pack(side="top", fill="x")
+        
+        content = tk.Label(self, text = '''
+    Modules 'numpy' and/or 'scipy' are missing.
+    To install them, pip must be installed. To check this, type in the terminal the command : 
+> pip --version
+    In case you get an error, you must reinstall python by choosing to install pip with it.
+    Once pip is installed, to install missing modules, type :
+> pip install name_of_the_module
+    Be careful, the 'pip' prefix at the beginning of the command may change for some configurations.
+        ''', font = parent.reg_font, justify = "left")
+        content.pack(pady=5)
+
 
 window = tk.Tk(className=' Setup interface')
 Wizard(window).pack(fill="both", expand=True)
