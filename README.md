@@ -49,7 +49,8 @@ Une fois le terminal ouvert, tapez :
 ```
 Attention, selon votre installation, `python3` pourra devoir être remplacé par `py` pour que ça marche.
 
-Le programme va démarre l'installation et écrire des messages dans le terminal si il rencontre des problèmes, suivez ces instructions et tout devrait bien se passer.
+Le programme va démarrer l'installation, suivez ces instructions et tout devrait bien se passer.
+Il existe aussi un installeur alternatif `installer_shell.py` qui ne passe pas par une interface graphique mais seulement par le terminal.
 
 ###  1.2. <a name='Installationmanuelleduprogramme'></a>Installation manuelle du programme
 
