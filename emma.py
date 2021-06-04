@@ -1,61 +1,107 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import re
-import numpy as np
-from scipy.signal import hilbert
 import cmath
-import math
+from posixpath import split
+from subprocess import Popen, PIPE
+import re
 
-mode = input("")
+COMMAND_LINE = []
+FILE = 'emma_traitement.py'
 
+# Don't touch the line below, it's meant for the windows installer, touching it with result in breaking the program for every system
+path_to_settings = None
+###############
 
-if mode == "ifft":
+if path_to_settings: # if there is a settings file set up by the installer
+    # First we extract all settings from the settings file
+    paths = {}
+    f = open(path_to_settings, 'r')
+    pattern = re.compile("\[.*")
+    line = f.readline()
+    while len(line):
+        if not (pattern.match(line)) and len(line.split(" = ")) == 2:
+            paths[line.split(" = ")[0]] = line.split(" = ")[1][:(len(line.split(" = ")[1]) - 1)]
+        line = f.readline()
 
-    n = int(input(""))
+    # Now we will use extracted settings to create the command
+    CPYTHON_BIN = (paths['system32'] + '/cmd.exe /C ' + paths['python'])
+    CPYTHON_LIB = paths['emma_directory']
+    CPYTHON_FILE = CPYTHON_LIB + FILE
+    COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
 
-    real = []
-    imaginary = []
-
-    for i in range(n):
-        real.append(float(input("")))
-
-    for i in range(n):
-        imaginary.append(float(input("")))
-
-    n = len(real)
-
-    signal = np.array([complex(real[i], imaginary[i]) for i in range(n)])
-    signal = np.fft.ifftshift(signal)
-
-    ifft = np.fft.ifft(signal)
-
-    for i in ifft:
-        print(i)
-
-if mode == 'ht':
-
-    n = int(input(""))
-
-    real_spectre = []
-
-    for i in range(n):
-        real_spectre.append(float(input("")))
-
-    n = len(real_spectre)
-
-    spectre_complex = hilbert(real_spectre)
-
-    # Passage au complexe conjugué car spectre en entrée
-    spectre_complex_real = np.real(spectre_complex)
-    spectre_complex_imag = np.imag(spectre_complex)
-    spectre_complex = np.array([complex(spectre_complex_real[i], - spectre_complex_imag[i]) for i in range(n)])
-
-    spectre = np.fft.ifftshift(spectre_complex)
-    signal = np.fft.ifft(spectre)
-
-    for i in signal:
-        print(i)
-
+    COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
 else:
-    assert 1 == 0, "wrong mode"
+    # Read each comment after the character '#' to know what to do :
+
+    # Put here the path to python3, it's usually /usr/bin/python3 but there may be some changes depending of your system
+    CPYTHON_BIN = ('/path/to/python3')
+        
+    # Put the path to the folder where emma_traitement.py is located   
+    CPYTHON_LIB = '/path/to/EMMA'
+
+    CPYTHON_FILE = CPYTHON_LIB + FILE
+    COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
+
+    COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
+
+def retrieve_spectrum():
+    real = GETPROCDATA(-100000, 100000)
+    imaginary = GETPROCDATA(-100000, 100000, type = dataconst.PROCDATA_IMAG)
+
+    if imaginary is not None:
+        assert len(real) == len(imaginary), "Incorrect data, some real or imaginary numbers are missing"
+
+    return real, imaginary
+
+def ifft((real, imaginary)):
+
+    p = Popen(COMMAND_LINE, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
+    if imaginary is not None:
+        SHOW_STATUS('numpy ifft in progress.')
+        text = ""
+        p.stdin.write("ifft\n")
+        p.stdin.write(str(len(real)) + "\n")
+        for r in real:
+            p.stdin.write(str(r) + "\n")
+        for i in imaginary:
+            p.stdin.write(str(i) + "\n")
+
+    else:
+        SHOW_STATUS('scipy ht and numpy ifft in progress.')
+        text = ""
+        p.stdin.write("ht\n")
+        p.stdin.write(str(len(real)) + "\n")
+        for r in real:
+            p.stdin.write(str(r) + "\n")
+
+    # Output contains the ifft done in tha emma_traitement.py file
+
+    output, err = p.communicate()
+
+    ifft_result = []
+
+    numbers = re.findall(r'.+\d+.+\d+\w.', output)
+
+    for number in numbers:
+        if number != []:
+            ifft_result.append(complex(number[1:-1]))
+
+    return ifft_result
+
+
+data = ifft(retrieve_spectrum())
+
+# Modulus normalization
+
+modulus = [abs(data[i]) for i in range(len(data))]
+modulus = [float(i) / max(modulus) * 100. for i in modulus]
+
+# phase + modifications
+
+phase = [(cmath.phase(i) * 180. / cmath.pi) % 360. for i in data]
+
+shape_name = str(INPUT_DIALOG("EMMA", "Entrez le nom de la shape a enregistrer", ["Name = "], ["Shape"], ["",""], ["1", "1"])[0])
+SAVE_SHAPE(str(shape_name), str(shape_name), modulus, phase)
+MSG("Shape saved under the name : " + shape_name)
