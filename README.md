@@ -19,7 +19,7 @@
 
 **Introduction :**
 
-Ce programme nécessite une installation à jour de Python 3.9.x .
+Ce programme nécessite une installation à jour de [Python 3.9.x](https://www.python.org/downloads/) .
 Durant l'installation de python, si on vous laisse le choix, installez également `pip` et `tkinter`.
 
 Les modules `numpy` et `scipy` doivent également être installés, via :
