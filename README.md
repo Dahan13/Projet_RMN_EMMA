@@ -38,7 +38,7 @@ This version of the program supports shape generation from a spectrum (real + im
 
 - A system running Windows 8, 8.1 or 10
 
-####  1.1.2. <a name='Installation:'></a>Installation 
+####  1.1.2. <a name='Installation'></a>Installation 
 
 Unzip the archive into an unprotected folder on your computer such as the `Downloads` or `Documents` folder. Then open a terminal in the folder where all the files including `installer.py` are located (SHIFT + right click => Open PowerShell for Windows).
 
