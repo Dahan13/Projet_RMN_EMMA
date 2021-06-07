@@ -1,14 +1,14 @@
-# Projet_RMN_EMMA
+# Project RMN EMMA
 
-**Table des matières :**
+**Table of contents :**
 <!-- vscode-markdown-toc -->
-* 1. [Version intégrée à TopSpin](#VersionintgreTopSpin:)
-	* 1.1. [Installation automatique du programme](#Installationautomatiqueduprogramme)
-		* 1.1.1. [Prérequis](#Prrequis:)
-		* 1.1.2. [Installation](#Installation:)
-	* 1.2. [Installation manuelle du programme](#Installationmanuelleduprogramme)
-	* 1.3. [Utilisation du programme](#Utilisationduprogramme)
-* 2. [Version manuelle](#Versionmanuelle:)
+* 1. [Integrated version to TopSpin](#VersionintgreTopSpin)
+	* 1.1. [Automatic installation of the program](#Installationautomatiqueduprogramme)
+		* 1.1.1. [Requirements](#Prrequis)
+		* 1.1.2. [Installation](#Installation)
+	* 1.2. [Manual installation of the program](#Installationmanuelleduprogramme)
+	* 1.3. [How to use](#Utilisationduprogramme)
+* 2. [Manual version](#Versionmanuelle)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -19,58 +19,58 @@
 
 **Introduction :**
 
-Ce programme nécessite une installation à jour de [Python 3.9.x](https://www.python.org/downloads/) .
-Durant l'installation de python, si on vous laisse le choix, installez également `pip` et `tkinter`.
+This program requires an up-to-date installation of [Python 3.9.x](https://www.python.org/downloads/) .
+During the installation of python, if you are given the choice, also install `pip` and `tkinter`.
 
-Les modules `numpy` et `scipy` doivent également être installés, via :
+Modules `numpy` and `scipy` must also be installed, with :
 ```bash
 > pip install name_of_the_module
 ```
 
 
 
-##  1. <a name='VersionintgreTopSpin:'></a>Version intégrée à TopSpin:
+##  1. <a name='VersionintgreTopSpin'></a>Integrated version to TopSpin:
 
-Cette version du programme prend en charge la génération de shape à partir d'un spectre (partie réelle + imaginaire ou réelle seulement).
-L'utilisation de cette version nécessite d'avoir [le logiciel TopSpin de Bruker](https://www.bruker.com/protected/en/services/software-downloads/nmr/pc/pc-topspin.html) installé.
-###  1.1. <a name='Installationautomatiqueduprogramme'></a>Installation automatique du programme
+This version of the program supports shape generation from a spectrum (real + imaginary part or real only). To use this version you need to have [Bruker's TopSpin software](https://www.bruker.com/protected/en/services/software-downloads/nmr/pc/pc-topspin.html) installed.
+###  1.1. <a name='Installationautomatiqueduprogramme'></a>Automatic installation of the program
 
-####  1.1.1. <a name='Prrequis:'></a>Prérequis
+####  1.1.1. <a name='Prrequis'></a>Requirements
 
-- Un système sous Windows 8, 8.1 ou 10
+- A system running Windows 8, 8.1 or 10
 
 ####  1.1.2. <a name='Installation:'></a>Installation 
 
-Dézippez l'archive dans un dossier non protégé de votre ordinateur tel que le dossier `Téléchargements` ou `Documents`. Ouvrez ensuite un terminal dans le dossier où se trouvent l'intégralité des fichiers dont `installer.py` (MAJ + clic droit => Ouvrir la fenêtre PowerShell pour Windows).
+Unzip the archive into an unprotected folder on your computer such as the `Downloads` or `Documents` folder. Then open a terminal in the folder where all the files including `installer.py` are located (SHIFT + right click => Open PowerShell for Windows).
 
-Une fois le terminal ouvert, tapez :
+Once the terminal is open, type :
 ```bash
 > python3 ./installer.py
 ```
-Attention, selon votre installation, `python3` pourra devoir être remplacé par `py` pour que ça marche.
+Be careful, depending on your installation, `python3` may have to be replaced by `py` for it to work.
 
-Le programme va démarrer l'installation, suivez ces instructions et tout devrait bien se passer.
-Il existe aussi un installeur alternatif `installer_shell.py` qui ne passe pas par une interface graphique mais seulement par le terminal.
+The program will start the installation, follow these instructions and everything should work fine. 
+There is also an alternative installer `installer_shell.py` which does not use a graphical interface but only the terminal.
 
-###  1.2. <a name='Installationmanuelleduprogramme'></a>Installation manuelle du programme
+###  1.2. <a name='Installationmanuelleduprogramme'></a> Manual installation of the program
+
 
 <br>
-Cette installation est compatible pour toutes les plateformes, toutefois nous ne fournissons aucun support pour les machines sous MAC/Linux/Debian.
+This installation is compatible for all platforms, however we do not provide any support for MAC/Linux/Debian machines.
 <br>
 <br>
 
-- Placer `emma.py` dans ...\Topspin4\exp\stan\nmr\py\user\
-- Déplacez `emma_traitement.py` dans un dossier où vous le souhaiter, ce dernier ne doit pas se trouver dans un répertoire sécurisé de la machine, pour éviter tout risque, le dossier `Documents` est le meilleur choix possible.
-- Actualiser les chemins de fichiers `CPYTHON_BIN` et `CPYTHON_LIB` dans `emma.py`, en portant une attention particulière à respecter les / ou \\.
-Vous pouvez ouvrir le fichier avec le bloc-note, quelques instructions supplémentaires sont fournis dans `emma.py`
+- Place `emma.py` in ...\Topspin_folder\exp\stan\nmr\py\user\
+- Move `emma_traitement.py` in a folder where you want it, this last one must not be in a secured directory of the machine, to avoid any risk, the  `Documents` folder is the best possible choice.
+- Update file paths `CPYTHON_BIN` and `CPYTHON_LIB` in `emma.py`, paying special attention to respect the / or \\.
+You can open the file with notepad, some additional instructions are provided in `emma.py`
 
-###  1.3. <a name='Utilisationduprogramme'></a>Utilisation du programme
-Vous devez ouvrir le spectre dans TopSpin, taper la commande edpy en bas à gauche et exécuter `emma.py` (ou la commande "xpy emma_spectrum_to_shape.py").
+###  1.3. <a name='Utilisationduprogramme'></a> How to use
+You have to open the spectrum in TopSpin, type the command `edpy` in the bottom left corner and run `emma.py` (or the command "xpy emma.py").
 
-Suivez les instructions du programme pour sauvegarder votre Shape, vous pouvez ensuite vous en servir comme vous voulez
+Follow the instructions of the program to save your Shape, then you can use it as you wish
 
-##  2. <a name='Versionmanuelle:'></a>Version manuelle :
+##  2. <a name='Versionmanuelle'></a>Manual Version :
 
-Pour la lancer, lancez le fichier `main.py` situé dans le dossier `manual_version`. La version manuelle fonctionne normalement sur tous les OS sans problèmes. 
+To run it, run `main.py` file located in the `manual_version` folder. The manual version works normally on all OS without problems.
 
-Pour s'en servir, vous n'avez besoin que d'une FID exportée par TopSpin. Nous ne prenons pas en charge des FID exportées par d'autres logiciels.
+To use it, you only need a FID exported by TopSpin. We do not support FIDs exported by other software.

@@ -56,7 +56,6 @@ def main():
 
     # Info from user
     topspin_path = ask_directory("Select Topspin main directory")
-    print(topspin_path)
     # Safeguard, if directory is invalid (not a string or not topspin)
     while topspin_path == "" or not os.path.exists(topspin_path + "/topspin.cmd"):
         if topspin_path == "":
