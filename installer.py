@@ -208,7 +208,7 @@ class Step3(tk.Frame):
         # Checking if given path to TopSpin directory was correct
         if (on_windows and os.path.exists(path_topspin + "/topspin.cmd") or not on_windows and os.path.exists(path_topspin + "/exp")) and path_topspin != "":
             if on_windows:
-                documents_path = get_documents_path
+                documents_path = get_documents_path()
             else:
                 messagebox.showwarning(title="Warning !", message="""
                 You are not on Windows.
