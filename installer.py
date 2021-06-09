@@ -8,10 +8,16 @@ import tkinter.messagebox as messagebox
 import os
 import sys
 import shutil
-import ctypes.wintypes
 import configparser
 import platform
 import re
+
+on_windows = True
+try:
+    import ctypes.wintypes
+except:
+    on_windows = False
+
 
 path_topspin = ""
 
@@ -168,7 +174,7 @@ class Step2(tk.Frame):
         global message
         global path_topspin
         path_topspin = filedialog.askdirectory(title="Specify TopSpin's main folder")
-        while  not os.path.exists(path_topspin + "/topspin.cmd") and path_topspin != "":
+        while (on_windows and not os.path.exists(path_topspin + "/topspin.cmd") or not on_windows and not os.path.exists(path_topspin + "/exp/")) and path_topspin != "":
             messagebox.showwarning(title="Warning !", message="This is not TopSpin's main directory.\nLook for the directory where topspin.cmd is located !")
             path_topspin = filedialog.askdirectory(title="Specify TopSpin's main folder")
         message.set(path_topspin)
@@ -200,7 +206,18 @@ class Step3(tk.Frame):
     def install(self):
         global path_topspin
         # Checking if given path to TopSpin directory was correct
-        if os.path.exists(path_topspin + "/topspin.cmd"):
+        if (on_windows and os.path.exists(path_topspin + "/topspin.cmd") or not on_windows and os.path.exists(path_topspin + "/exp")) and path_topspin != "":
+            if on_windows:
+                documents_path = get_documents_path
+            else:
+                messagebox.showwarning(title="Warning !", message="""
+                You are not on Windows.
+                Therefore, we will asks you to give us a directory to install the settings.
+                This directory must not be protected, we advise you a "Documents" or "Downloads" directory.
+                """)
+                documents_path = filedialog.askdirectory(title="Settings installation directory")
+                if not documents_path or documents_path == "":
+                    return
             self.install_button.pack_forget()
             global message2
         
@@ -209,11 +226,13 @@ class Step3(tk.Frame):
             user_directory = r"/exp/stan/nmr/py/user/"
             emma_starter_origin = r"./emma.py"
             emma_origin = r"./emma_traitement.py"
-            documents_path = get_documents_path()
 
             message2.set("Topspin directory set to : \'" + path_topspin + "\'\n")
 
-            python_path = (os.path.dirname(sys.executable) + "\python.exe").replace("/", "\\")
+            if on_windows:
+                python_path = (os.path.dirname(sys.executable) + "\python.exe").replace("/", "\\")
+            else:
+                python_path = (os.path.dirname(sys.executable) + "/python3").replace("\\", "/")
             message2.set(str(message2.get()) + "\nPython path set to : \'" + python_path + "\'\n\n")
 
             # Create path
@@ -238,7 +257,8 @@ class Step3(tk.Frame):
             config.set('PATHS', 'emma_directory', str(emma_directory))
             config.set('PATHS', 'emma_starter', str(emma_starter_target))
             config.set('PATHS', 'emma_process', str(emma_target))
-            config.set('PATHS', 'system32', str(get_system32_location()))
+            if on_windows:
+                config.set('PATHS', 'system32', str(get_system32_location()))
 
     
             # Preparing emma.py for transfer :

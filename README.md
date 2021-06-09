@@ -55,7 +55,7 @@ There is also an alternative installer `installer_shell.py` which does not use a
 
 
 <br>
-This installation is compatible for all platforms, however we do not provide any support for MAC/Linux/Debian machines.
+This installation is compatible for all platforms, however we do not provide any support for MAC/Linux/Debian machines yet.
 <br>
 <br>
 

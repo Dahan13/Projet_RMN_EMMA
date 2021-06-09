@@ -13,37 +13,30 @@ FILE = 'emma_traitement.py'
 path_to_settings = None
 ###############
 
-if path_to_settings: # if there is a settings file set up by the installer
-    # First we extract all settings from the settings file
-    paths = {}
-    f = open(path_to_settings, 'r')
-    pattern = re.compile("\[.*")
-    line = f.readline()
-    while len(line):
-        if not (pattern.match(line)) and len(line.split(" = ")) == 2:
-            paths[line.split(" = ")[0]] = line.split(" = ")[1][:(len(line.split(" = ")[1]) - 1)]
-        line = f.readline()
+if path_to_settings == None:
+    MSG("It seems that you didn't launch the installer or the settings are missing, the program will crash.")
 
-    # Now we will use extracted settings to create the command
+# First we extract all settings from the settings file
+paths = {}
+f = open(path_to_settings, 'r')
+pattern = re.compile("\[.*")
+line = f.readline()
+while len(line):
+    if not (pattern.match(line)) and len(line.split(" = ")) == 2:
+        paths[line.split(" = ")[0]] = line.split(" = ")[1][:(len(line.split(" = ")[1]) - 1)]
+    line = f.readline()
+
+# Now we will use extracted settings to create the command
+if "system32" in paths.keys(): # System32 exists only on windows
     CPYTHON_BIN = (paths['system32'] + '/cmd.exe /C ' + paths['python'])
     CPYTHON_LIB = paths['emma_directory']
-    CPYTHON_FILE = CPYTHON_LIB + FILE
-    COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
-
-    COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
 else:
-    # Read each comment after the character '#' to know what to do :
+    CPYTHON_BIN = paths["python"] 
+    CPYTHON_LIB = paths["emma_directory"]
 
-    # Put here the path to python3, it's usually /usr/bin/python3 but there may be some changes depending of your system
-    CPYTHON_BIN = ('/path/to/python3')
-        
-    # Put the path to the folder where emma_traitement.py is located   
-    CPYTHON_LIB = '/path/to/EMMA'
-
-    CPYTHON_FILE = CPYTHON_LIB + FILE
-    COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
-
-    COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
+CPYTHON_FILE = CPYTHON_LIB + FILE
+COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
+COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
 
 def retrieve_spectrum():
     real = GETPROCDATA(-100000, 100000)
@@ -56,7 +49,10 @@ def retrieve_spectrum():
 
 def ifft((real, imaginary)):
 
-    p = Popen(COMMAND_LINE, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    if "system32" in paths.keys():
+        p = Popen(COMMAND_LINE, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    else:
+        p = Popen(COMMAND_LINE, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
 
     if imaginary is not None:
         SHOW_STATUS('numpy ifft in progress.')
