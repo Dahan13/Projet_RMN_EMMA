@@ -17,6 +17,13 @@ try:
     import ctypes.wintypes
 except:
     on_windows = False
+    if platform.system() == 'Darwin':
+        messagebox.showwarning(title="Warning !", message="""
+                You are running on MacOS.
+                In order for this program to works, python will request aditionnal permissions.
+                """)
+        os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+
 
 
 path_topspin = ""

@@ -38,13 +38,14 @@ Depending of your system, `sudo apt` may need to be replaced by another prefix
 
 ##  1. <a name='VersionintgreTopSpin'></a>Program integrated to TopSpin:
 
-This version of the program supports shape generation from a spectrum (real + imaginary part or real only). To use this version you need to have [Bruker's TopSpin software](https://www.bruker.com/protected/en/services/software-downloads/nmr/pc/pc-topspin.html) installed.
+This version of the program supports shape generation from a spectrum (real + imaginary part or real only). To use this version you need to have [Bruker's TopSpin software](https://www.bruker.com/protected/en/services/software-downloads/nmr.html) installed.
 ###  1.1. <a name='Installationautomatiqueduprogramme'></a>Automatic installation of the program
 
 ####  1.1.1. <a name='Prrequis'></a>Requirements
 
 - A system running Windows 8, 8.1 or 10
-- A system running under Linux/Debian (Unstable)
+- A system running on Linux/Debian (Beta)
+- A system running on MacOS (Untested)
 
 ####  1.1.2. <a name='Installation'></a>Installation 
 
