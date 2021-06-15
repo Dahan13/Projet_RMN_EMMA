@@ -14,7 +14,6 @@ def peaks_getter():
         peaks_positions = []
         for peak in list:
             peaks_positions.append(str(peak.getPositions()[0]))
-        MSG(str(peaks_positions)) # For testing purposes, to delete
         return peaks_positions
 
 def main():
@@ -52,7 +51,6 @@ def main():
     COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE, str(peaks_positions), str(chosen_peak)]
     
     COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
-    MSG(COMMAND_LINE) # For testing purposes, to delete
     
     
     if "system32" in paths.keys():

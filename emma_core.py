@@ -1,12 +1,13 @@
 import re
 
 
+# Don't touch the line below, it's meant for the windows installer, touching it with result in breaking the program for every system
+path_to_settings = None
+###############
+
 def export_settings():
 
-    # Don't touch the line below, it's meant for the windows installer, touching it with result in breaking the program for every system
-    path_to_settings = 'C:/Users/Corentin/Documents/EMMA/emma_settings.ini'
-    ###############
-
+    """ Exports parameters from the settings file """
     if path_to_settings == None:
         MSG("It seems that you didn't launch the installer or the settings are missing, the program will crash.")
 

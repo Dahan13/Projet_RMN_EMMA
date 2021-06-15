@@ -5,26 +5,12 @@ import cmath
 from posixpath import split
 from subprocess import Popen, PIPE
 import re
+import emma_core as core
 
 COMMAND_LINE = []
 FILE = 'emma_traitement.py'
 
-# Don't touch the line below, it's meant for the windows installer, touching it with result in breaking the program for every system
-path_to_settings = None
-###############
-
-if path_to_settings == None:
-    MSG("It seems that you didn't launch the installer or the settings are missing, the program will crash.")
-
-# First we extract all settings from the settings file
-paths = {}
-f = open(path_to_settings, 'r')
-pattern = re.compile("\[.*")
-line = f.readline()
-while len(line):
-    if not (pattern.match(line)) and len(line.split(" = ")) == 2:
-        paths[line.split(" = ")[0]] = line.split(" = ")[1][:(len(line.split(" = ")[1]) - 1)]
-    line = f.readline()
+paths = core.export_settings()
 
 # Now we will use extracted settings to create the command
 if "system32" in paths.keys(): # System32 exists only on windows
