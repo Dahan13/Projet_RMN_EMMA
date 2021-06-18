@@ -233,7 +233,6 @@ class Step3(tk.Frame):
             user_directory = r"/exp/stan/nmr/py/user/"
             emma_starter_origin = r"./emma.py"
             deconv_starter_origin = r"./deconv.py"
-            core_starter_origin = r"./emma_core.py"
             emma_origin = r"./emma_traitement.py"
             deconv_origin = r"./deconv_traitement.py"
 
@@ -251,7 +250,6 @@ class Step3(tk.Frame):
             deconv_target = emma_directory + deconv_origin[2:]
             emma_starter_target = path_topspin + user_directory + emma_starter_origin[2:]
             deconv_starter_target = path_topspin + user_directory + deconv_starter_origin[2:]
-            core_starter_target = path_topspin + user_directory + core_starter_origin[2:]
 
     
             # Setting up settings file data :
@@ -276,7 +274,7 @@ class Step3(tk.Frame):
     
             # Preparing emma.py for transfer :
             message2.set(str(message2.get()) + "Writing and copying files to corresponding directories... \n\n")
-            emma = open(core_starter_origin, 'r')
+            emma = open(emma_starter_origin, 'r')
             pattern = re.compile("path_to_settings.*")
             lines = emma.readlines()
             index = 0
@@ -288,9 +286,26 @@ class Step3(tk.Frame):
             lines[index] = f"path_to_settings = \'{emma_directory + 'emma_settings.ini'}\'\n"
             emma.close()
             # We are making a copy of emma.py that we will copy after updating inside it's path to the settings doc
-            new_emma = open(core_starter_origin[:(len(core_starter_origin) - 3)] + "_transfert.py", 'w')
+            new_emma = open(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", 'w')
             new_emma.writelines(lines)
             new_emma.close()
+
+            # Preparing deconv.py for transfer :
+            deconv = open(deconv_starter_origin, 'r')
+            pattern = re.compile("path_to_settings.*")
+            lines = deconv.readlines()
+            index = 0
+            for line in lines:
+                if pattern.match(line):
+                    break
+                else:
+                    index += 1
+            lines[index] = f"path_to_settings = \'{emma_directory + 'emma_settings.ini'}\'\n"
+            deconv.close()
+            # We are making a copy of emma.py that we will copy after updating inside it's path to the settings doc
+            new_deconv = open(deconv_starter_origin[:(len(deconv_starter_origin) - 3)] + "_transfert.py", 'w')
+            new_deconv.writelines(lines)
+            new_deconv.close()
 
     
             # Creating directory and moving files
@@ -300,12 +315,11 @@ class Step3(tk.Frame):
             shutil.copy(emma_origin, emma_target)
             shutil.copy(deconv_origin, deconv_target)
             message2.set(str(message2.get()) + "EMMA & Deconv processes successfully moved to : \'" + emma_directory + "\'\n")
-            shutil.copy(core_starter_origin[:(len(core_starter_origin) - 3)] + "_transfert.py", core_starter_target)
-            message2.set(str(message2.get()) + "EMMA core successfully moved to : \'" + core_starter_target + "\'\n")
-            shutil.copy(deconv_starter_origin, deconv_starter_target)
-            message2.set(str(message2.get()) + "Deconv starter successfully moved to : \'" + deconv_starter_target + "\'\n")
-            shutil.copy(emma_starter_origin, emma_starter_target)
-            message2.set(str(message2.get()) + "EMMA starter successfully moved to : \'" + emma_starter_target + "\'\n")
+            shutil.copy(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", emma_starter_target)
+            message2.set(str(message2.get()) + "EMMA successfully moved to : \'" + emma_starter_target + "\'\n")
+            shutil.copy(deconv_starter_origin[:(len(deconv_starter_origin) - 3)] + "_transfert.py", deconv_starter_target)
+            message2.set(str(message2.get()) + "DECONV successfully moved to : \'" + deconv_starter_target + "\'\n")
+            
             f = open(f"{emma_directory}emma_settings.ini", "w")
             config.write(f)
             f.close()

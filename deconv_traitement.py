@@ -1,9 +1,24 @@
 import sys
-import os
+import numpy as np
 
 peaks_infos = sys.argv[1:][0] # First we take the list containing values
 chosen_peak = float(sys.argv[2])
+start_log = False
 
+def log(message):
+    filename = "C:/Users/Corentin/Documents/EMMA/log_deconv.txt"
+    global start_log
+    # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
+    if start_log:
+        writing_status = "a"
+    else:
+        writing_status = "w"
+        start_log = True
+    f = open(filename, writing_status)
+    f.write(str(message) + "\n")
+    f.close()
+
+log("Chosen peak : " + str(chosen_peak))
 if peaks_infos != '[]':
     peaks_str = peaks_infos.strip('][').split(', ') # We convert the stringified list into a regular list
 
@@ -14,8 +29,35 @@ if peaks_infos != '[]':
 else:
     peaks = None
 # Peaks is the final list containing peaks other than the one to deconvolve, chosen_peak the one to deconvolve
+log("> peaks OK")
+n = int(input(""))
+log("length : " + str(n))
+real = []
+imaginary = []
 
-# This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
-f = open("C:/Users/Corentin/Documents/EMMA/log_deconv.txt", 'w')
-f.write(str(peaks) + " " + str(chosen_peak))
-f.close()
+for i in range(n):
+    value = float(input(""))
+    log("real n°" + str(i) + " : " + str(value))
+    real.append(value)
+
+mode = input("")
+if mode == "imaginary":
+    for i in range(n):
+        value = float(input(""))
+        log("ima n°" + str(i) + " : " + str(value) )
+        imaginary.append(value)
+
+
+#
+#
+# Do your things with the data
+# 
+#
+
+points = np.array([(real[i], imaginary[i]) for i in range(n)])
+log(str(points))
+for element in points:
+    print(points)
+
+
+log("> all done")

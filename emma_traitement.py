@@ -58,4 +58,4 @@ if mode == 'ht':
         print(i)
 
 else:
-    assert 1 == 0, "wrong mode"
+    raise ValueError("Wrong mode")
