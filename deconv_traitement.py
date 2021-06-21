@@ -1,5 +1,4 @@
 import sys
-import numpy as np
 
 peaks_infos = sys.argv[1:][0] # First we take the list containing values
 chosen_peak = float(sys.argv[2])
@@ -54,10 +53,14 @@ if mode == "imaginary":
 # 
 #
 
-points = np.array([(real[i], imaginary[i]) for i in range(n)])
-log(str(points))
+points = [(real[i], imaginary[i]) for i in range(n)]
+log(len(str(points)))
+
+counter = 0
 for element in points:
+    counter += 1
     print(points)
 
 
 log("> all done")
+log("iteration counter :" + str(counter))

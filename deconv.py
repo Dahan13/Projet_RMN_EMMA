@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import shutil
 from subprocess import Popen, PIPE
 
 ##############################
@@ -108,6 +109,52 @@ def main((real, imaginary)):
     SHOW_STATUS('deconvolve done. Processing deconvolved data')
     output, err = p.communicate()
 
-    return output, err
+    numbers = re.findall(r'.+\d+.+\d+\w.', output)
 
-main(retrieve_spectrum())
+    return numbers
+
+def save_spectrum(output):
+    # Separating real and imaginary list
+    real = []
+    imaginary = []
+
+    # Converting stringified output into numerals
+    output_f = []
+    output_str = output.strip('][').replace('(', '').replace(')', '').split(', ')
+    for i in range(0, len(output_str), 2):
+        output_f.append((float(output_str[i]), float(output_str[i + 1])))
+
+    for point in output_f:
+        real.append(point[0])
+        imaginary.append(point[1])
+
+    # Asking for the name of the new spectrum
+    SHOW_STATUS('Saving new spectrum')
+    parent_dataset = CURDATA()
+    name = INPUT_DIALOG("Name of the new spectrum",
+    "Please choose the name for the deconvolved spectrum.\nTHE NAME MUST BE A NUMBER.",
+    ["Name of the deconvolved spectrum :"])
+    # Insert here code to check name is int #
+    son_dataset = [parent_dataset[0], name[0], parent_dataset[2], parent_dataset[3]]
+
+    # Saving the deconvolved spectrum
+    path_parent_1 = parent_dataset[3] + '/' + parent_dataset[0] + '/' + parent_dataset[1]
+    path_parent_2 = 'pdata/' + parent_dataset[2]
+    path_son_1 = parent_dataset[3] + '/' + parent_dataset[0] + '/' + name[0]
+    
+    NEWDATASET(son_dataset, path_parent_1, path_parent_2)
+
+    # Warning, because TopSpin is SHIT, there is still missing files that we will handle (you read that god damn right).
+    shutil.copy(path_parent_1 + '/acqu', path_son_1 + '/acqu')
+    shutil.copy(path_parent_1 + '/acqus', path_son_1 + '/acqus')
+    shutil.copy(path_parent_1 + '/' + path_parent_2 + '/procs', path_son_1 + '/' + path_parent_2 + '/procs')
+
+    RE(son_dataset)
+    SAVE_ARRAY_AS_1R1I(real, imaginary)
+    RE(son_dataset)
+
+    
+
+
+save_spectrum(main(retrieve_spectrum())[0])
+# MSG(str(CURDATA()))
