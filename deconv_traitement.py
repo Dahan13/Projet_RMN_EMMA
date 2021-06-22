@@ -25,21 +25,13 @@ def retrieve_spectrum():
     n = int(input(""))
     log("length : " + str(n))
     real = []
-    imaginary = []
 
     for i in range(n):
         value = float(input(""))
         log("real n. " + str(i) + " : " + str(value))
         real.append(value)
 
-    mode = input("")
-    if mode == "imaginary":
-        for i in range(n):
-            value = float(input(""))
-            log("imag n. " + str(i) + " : " + str(value) )
-            imaginary.append(value)
-
-    return np.array(real), np.array(imaginary)
+    return np.array(real)
 
 def retrieve_peaks():
     log("> retriving peaks from topspin...")
@@ -280,7 +272,7 @@ def deconv(y_list, peaks, peak_index):
     return best_mix
 
 
-real, imaginary = retrieve_spectrum()
+real = retrieve_spectrum()
 peaks_values, chosen_peak = retrieve_peaks()
 
 peaks_values.append(chosen_peak)
@@ -305,7 +297,5 @@ log("> deconvolution ok :")
 
 for r in res: 
     log(str(r))
-
-points = [(res[i], imaginary[i]) for i in range(len(res))]
-
-return_spectrum(points)
+    
+return_spectrum(res)
