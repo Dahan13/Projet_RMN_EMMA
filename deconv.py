@@ -62,14 +62,21 @@ def main((real, imaginary)):
     for i in range(len(peaks_positions)):
         peaks_str += str(i + 1) + ": " + str(peaks_positions[i]) + ",\n"
     # Inputing
-    result = int(INPUT_DIALOG("Choose the peak to deconvolve.",
+    result = INPUT_DIALOG("Choose the peak to deconvolve.",
     "Here is peak positions (ppm) given by TopSpin :\n\n" + peaks_str + "\nEnter the position of the peak you want to deconvolve\n(e.g : 1 to deconvolve the first one).",
-    ["Position in the list"])[0])
-    # Checking user input
-    while result < 1 or result > len(peaks_positions) or not result:
-        result = int(INPUT_DIALOG("Choose the peak to deconvolve.",
-    "Here is peak positions (ppm) given by TopSpin :\n\n" + peaks_str + "\nEnter the position of the peak you want to deconvolve\nPlease make sure you are entering a valid number !",
-    ["Position in the list"])[0])
+    ["Position in the list"])[0]
+    # Checking that input is a int AND it's a valid value
+    while not isinstance(result, int):
+        try:
+            result = int(result)
+            if result < 1 or result > len(peaks_positions):
+                result = INPUT_DIALOG("Choose the peak to deconvolve.",
+                "Here is peak positions (ppm) given by TopSpin :\n\n" + peaks_str + "\nEnter the position of the peak you want to deconvolve\nPlease make sure you are entering a valid number !",
+                ["Position in the list"])[0]
+        except ValueError:
+            result = INPUT_DIALOG("Choose the peak to deconvolve.",
+            "Here is peak positions (ppm) given by TopSpin :\n\n" + peaks_str + "\nEnter the position of the peak you want to deconvolve\nPlease make sure you are entering a valid number !",
+            ["Position in the list"])[0]
     chosen_peak = peaks_positions[result - 1]
     del peaks_positions[result - 1]
     
@@ -108,53 +115,51 @@ def main((real, imaginary)):
 
     SHOW_STATUS('deconvolve done. Processing deconvolved data')
     output, err = p.communicate()
-
     numbers = re.findall(r'.+\d+.+\d+\w.', output)
 
     return numbers
 
 def save_spectrum(output):
+
     # Separating real and imaginary list
     real = []
     imaginary = []
 
-    # Converting stringified output into numerals
-    output_f = []
-    output_str = output.strip('][').replace('(', '').replace(')', '').split(', ')
+    output_str = output.strip('][').replace('(', '').replace(')', '').split(', ') # Separating all our value to compute
     for i in range(0, len(output_str), 2):
-        output_f.append((float(output_str[i]), float(output_str[i + 1])))
-
-    for point in output_f:
-        real.append(point[0])
-        imaginary.append(point[1])
+        real.append(float(output_str[i]))
+        imaginary.append(float(output_str[i+1]))
 
     # Asking for the name of the new spectrum
     SHOW_STATUS('Saving new spectrum')
     parent_dataset = CURDATA()
-    name = INPUT_DIALOG("Name of the new spectrum",
-    "Please choose the name for the deconvolved spectrum.\nTHE NAME MUST BE A NUMBER.",
-    ["Name of the deconvolved spectrum :"])
-    # Insert here code to check name is int #
-    son_dataset = [parent_dataset[0], name[0], parent_dataset[2], parent_dataset[3]]
+    expno = INPUT_DIALOG("Name of the new spectrum",
+    "Please choose the name for the deconvolved spectrum.\nThe name must be a number.",
+    ["Name of the deconvolved spectrum :"])[0]
+    while not isinstance(expno, int):
+        try:
+            expno = int(expno)
+        except ValueError:
+            expno = INPUT_DIALOG("Name of the new spectrum",
+            "Please choose the name for the deconvolved spectrum.\nTHE NAME MUST BE A NUMBER.",
+            ["Name of the deconvolved spectrum :"])[0]
+    son_dataset = [parent_dataset[0], str(expno), parent_dataset[2], parent_dataset[3]]
 
     # Saving the deconvolved spectrum
     path_parent_1 = parent_dataset[3] + '/' + parent_dataset[0] + '/' + parent_dataset[1]
     path_parent_2 = 'pdata/' + parent_dataset[2]
-    path_son_1 = parent_dataset[3] + '/' + parent_dataset[0] + '/' + name[0]
+    path_son_1 = parent_dataset[3] + '/' + parent_dataset[0] + '/' + str(expno)
     
     NEWDATASET(son_dataset, path_parent_1, path_parent_2)
 
-    # Warning, because TopSpin is SHIT, there is still missing files that we will handle (you read that god damn right).
+    # Warning, despite Topspin parameter copy, there is still missing files that we will handle
     shutil.copy(path_parent_1 + '/acqu', path_son_1 + '/acqu')
     shutil.copy(path_parent_1 + '/acqus', path_son_1 + '/acqus')
-    shutil.copy(path_parent_1 + '/' + path_parent_2 + '/procs', path_son_1 + '/' + path_parent_2 + '/procs')
+    shutil.copy(path_parent_1 + '/' + path_parent_2 + '/procs', path_son_1 + '/' + path_parent_2 + '/procs') # This file was already copied by TopSpin, but it's broken so we redo it
 
     RE(son_dataset)
     SAVE_ARRAY_AS_1R1I(real, imaginary)
     RE(son_dataset)
 
     
-
-
 save_spectrum(main(retrieve_spectrum())[0])
-# MSG(str(CURDATA()))
