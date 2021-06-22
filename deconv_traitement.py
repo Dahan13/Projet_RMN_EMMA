@@ -12,7 +12,7 @@ actual_time = time.struct_time(time.localtime())
 def log(message):
     
     """ This function will dynamically write logs"""
-    filename = path_to_documents + "deconv_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
+    filename = path_to_documents + "log/"+ "deconv_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
     global start_log
     # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
     if start_log:
@@ -53,7 +53,7 @@ def retrieve_peaks():
         for element in peaks_str:
             peaks_values.append(float(element.strip("\'")))
     else:
-        peaks_values = None
+        peaks_values = []
     # peaks_values is the final list containing peaks other than the one to deconvolve, chosen_peak the one to deconvolve
     log("Other peaks : " + str(peaks_values))
     log("> Peaks OK !")
