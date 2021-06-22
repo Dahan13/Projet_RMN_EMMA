@@ -55,7 +55,7 @@ def retrieve_peaks():
         for element in peaks_str:
             peaks_values.append(float(element.strip("\'")))
     else:
-        peaks_values = None
+        peaks_values = []
     # peaks_values is the final list containing peaks other than the one to deconvolve, chosen_peak the one to deconvolve
     log("Other peaks : " + str(peaks_values))
     log("> Peaks OK !")
