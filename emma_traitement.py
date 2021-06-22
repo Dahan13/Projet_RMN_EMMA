@@ -6,13 +6,37 @@ import numpy as np
 from scipy.signal import hilbert
 import cmath
 import math
+import time
+
+start_log = False
+path_to_documents = None
+actual_time = time.struct_time(time.localtime())
+
+def log(message):
+    
+    """ This function will dynamically write logs"""
+
+    if path_to_documents != None:
+        filename = path_to_documents + "emma_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
+        global start_log
+        # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
+        if start_log:
+            writing_status = "a"
+        else:
+            writing_status = "w"
+            start_log = True
+        f = open(filename, writing_status)
+        f.write(str(message) + "\n")
+        f.close()
 
 mode = input("")
+log("Mode set to : " + str(mode))
 
 
 if mode == "ifft":
 
     n = int(input(""))
+    log("length : " + str(n))
 
     real = []
     imaginary = []
@@ -25,6 +49,7 @@ if mode == "ifft":
 
     n = len(real)
 
+    log("> Processing data...")
     signal = np.array([complex(real[i], imaginary[i]) for i in range(n)])
     signal = np.fft.ifftshift(signal)
 
@@ -36,6 +61,7 @@ if mode == "ifft":
 if mode == 'ht':
 
     n = int(input(""))
+    log("length : " + str(n))
 
     real_spectre = []
 
@@ -44,6 +70,7 @@ if mode == 'ht':
 
     n = len(real_spectre)
 
+    log("> Processing data...")
     spectre_complex = hilbert(real_spectre)
 
     # Passage au complexe conjugué car spectre en entrée
@@ -54,8 +81,10 @@ if mode == 'ht':
     spectre = np.fft.ifftshift(spectre_complex)
     signal = np.fft.ifft(spectre)
 
+    log("> Transferring data to TopSpin...")
     for i in signal:
         print(i)
+    log("---> Data Treatment complete <---")
 
 else:
     raise ValueError("Wrong mode")

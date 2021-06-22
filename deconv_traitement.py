@@ -12,17 +12,19 @@ actual_time = time.struct_time(time.localtime())
 def log(message):
     
     """ This function will dynamically write logs"""
-    filename = path_to_documents + "log/"+ "deconv_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
-    global start_log
-    # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
-    if start_log:
-        writing_status = "a"
-    else:
-        writing_status = "w"
-        start_log = True
-    f = open(filename, writing_status)
-    f.write(str(message) + "\n")
-    f.close()
+
+    if path_to_documents != None:
+        filename = path_to_documents + "log/"+ "deconv_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
+        global start_log
+        # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
+        if start_log:
+            writing_status = "a"
+        else:
+            writing_status = "w"
+            start_log = True
+        f = open(filename, writing_status)
+        f.write(str(message) + "\n")
+        f.close()
 
 
 # Topspin communication functions
