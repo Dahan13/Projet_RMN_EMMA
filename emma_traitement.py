@@ -17,7 +17,7 @@ def log(message):
     """ This function will dynamically write logs"""
 
     if path_to_documents != None:
-        filename = path_to_documents + "emma_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
+        filename = path_to_documents + "log/" + "emma_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
         global start_log
         # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
         if start_log:

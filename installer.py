@@ -349,8 +349,8 @@ class Step3(tk.Frame):
             if not os.path.exists(emma_directory + "log/"):
                 os.mkdir(emma_directory + "log/")
                 message2.set(str(message2.get()) + "EMMA directory created at : \'" + emma_directory + "\'\n")
-            shutil.copy(emma_origin, emma_target)
 
+            shutil.copy(emma_origin[:(len(emma_origin) - 3)] + "_transfert.py", emma_target)
             shutil.copy(deconv_origin[:(len(deconv_origin) - 3)] + "_transfert.py", deconv_target)
             message2.set(str(message2.get()) + "EMMA & Deconv processes successfully moved to : \'" + emma_directory + "\'\n")
             shutil.copy(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", emma_starter_target)
