@@ -6,6 +6,10 @@ from posixpath import split
 from subprocess import Popen, PIPE
 import re
 
+if CURDATA() == None:
+    MSG("Warning !\nPlease select a dataset.")
+    EXIT()
+
 ##############################
 # Utility functions
 

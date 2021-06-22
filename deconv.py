@@ -5,6 +5,10 @@ import re
 import shutil
 from subprocess import Popen, PIPE
 
+if CURDATA() == None:
+    MSG("Warning !\nPlease select a dataset.")
+    EXIT()
+
 ##############################
 # Utility functions
 
@@ -146,7 +150,7 @@ def save_spectrum(real):
     # for i in range(len(real)):   
     #     text += str(i) + " " + str(real[i]) + "\n"
     # VIEWTEXT("GETPROCDATA Test", "Read Real Data", text)
-    
+
     RE(son_dataset)
     SAVE_ARRAY_AS_1R1I(real, None)
     RE(son_dataset)
