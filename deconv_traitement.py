@@ -28,20 +28,19 @@ def log(message):
 # Topspin communication functions
 
 def retrieve_spectrum():
-    log("> retrieving spectrum from Topspin... ")
+    log("Retrieving spectrum from Topspin... ")
     n = int(input(""))
     log("length : " + str(n))
     real = []
 
     for i in range(n):
         value = float(input(""))
-        log("real n. " + str(i) + " : " + str(value))
         real.append(value)
 
     return np.array(real)
 
 def retrieve_peaks():
-    log("> retriving peaks from topspin...")
+    log("Retrieving peaks from Topspin...")
     peaks_infos = sys.argv[1:][0] # First we take the list containing values
     chosen_peak = float(sys.argv[2])
 
@@ -53,27 +52,24 @@ def retrieve_peaks():
         peaks_values = []
         for element in peaks_str:
             peaks_values.append(float(element.strip("\'")))
-        for i in range(len(peaks_values)):
-            log("peak " + str(i) + " : " + str(peaks_values[i]))
     else:
-        peaks = None
+        peaks_values = None
     # peaks_values is the final list containing peaks other than the one to deconvolve, chosen_peak the one to deconvolve
-    
-    log("> peaks OK")
+    log("Other peaks : " + str(peaks_values))
+    log("> Peaks OK !")
     return peaks_values, chosen_peak
 
 def return_spectrum(points):
 
-    log("> returning new spectrum to Topspin... ")
+    log("Returning new spectrum to Topspin... ")
 
     counter = 0
     for element in points:
         counter += 1
-        print(points)
+        print(element)
 
-    log("> all done")
-    log("iteration counter :" + str(counter))
-
+    log("Iteration counter :" + str(counter))
+    log("---> Data treatment completed <---")
 # Spectrum handling functions
 
 class Peak:
@@ -296,13 +292,13 @@ for peak in peaks:
 
 peaks[chosen_index].y = real[peaks[chosen_index].x]
 
-log("> running deconvolution...")
+log("> Running deconvolution...")
 
 res = deconv(real, peaks, chosen_index).tolist()
 
-log("> deconvolution ok :")
-
-for r in res: 
-    log(str(r))
+log("> Deconvolution Over !")
     
 return_spectrum(res)
+
+log("\n\n Points before deconv : " + str(real))
+log("\n\n Points after deconv : " + str(res))

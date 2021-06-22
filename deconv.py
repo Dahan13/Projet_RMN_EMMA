@@ -9,7 +9,7 @@ from subprocess import Popen, PIPE
 # Utility functions
 
 # Don't touch the line below, it's meant for the windows installer, touching it with result in breaking the program for every system
-path_to_settings = 'C:/Users/lucas/Documents/EMMA/emma_settings.ini'
+path_to_settings = None
 ###############
 
 def export_settings():
@@ -55,8 +55,11 @@ def main(real):
     # Now generating user interface
     # First, generating a better presentation for peak positions
     peaks_str = ""
-    for i in range(len(peaks_positions)):
-        peaks_str += str(i + 1) + ": " + str(peaks_positions[i]) + ",\n"
+    peaks_indicators = []
+    for peak in GETPEAKSARRAY():
+        peaks_indicators.append(str(peak.getPositions()[0]))
+    for i in range(len(peaks_indicators)):
+        peaks_str += str(i + 1) + ": " + str(peaks_indicators[i]) + ",\n"
     # Inputing
     result = INPUT_DIALOG("Choose the peak to deconvolve.",
     "Here is peak positions (ppm) given by TopSpin :\n\n" + peaks_str + "\nEnter the position of the peak you want to deconvolve\n(e.g : 1 to deconvolve the first one).",
@@ -138,10 +141,12 @@ def save_spectrum(real):
     shutil.copy(path_parent_1 + '/acqu', path_son_1 + '/acqu')
     shutil.copy(path_parent_1 + '/acqus', path_son_1 + '/acqus')
     shutil.copy(path_parent_1 + '/' + path_parent_2 + '/procs', path_son_1 + '/' + path_parent_2 + '/procs') # This file was already copied by TopSpin, but it's broken so we redo it
-    text = ""
-    for i in range(len(real)):   
-        text += str(i) + " " + str(real[i]) + "\n"
-    VIEWTEXT("GETPROCDATA Test", "Read Real Data", text)
+
+    # text = ""
+    # for i in range(len(real)):   
+    #     text += str(i) + " " + str(real[i]) + "\n"
+    # VIEWTEXT("GETPROCDATA Test", "Read Real Data", text)
+    
     RE(son_dataset)
     SAVE_ARRAY_AS_1R1I(real, None)
     RE(son_dataset)
