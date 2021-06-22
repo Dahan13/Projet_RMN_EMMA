@@ -233,6 +233,7 @@ class Step3(tk.Frame):
             user_directory = r"/exp/stan/nmr/py/user/"
             emma_starter_origin = r"./emma.py"
             deconv_starter_origin = r"./deconv.py"
+            deconv_starter_topspin = r"./emma_deconv.py"
             emma_origin = r"./emma_traitement.py"
             deconv_origin = r"./deconv_traitement.py"
 
@@ -249,7 +250,7 @@ class Step3(tk.Frame):
             emma_target = emma_directory + emma_origin[2:]
             deconv_target = emma_directory + deconv_origin[2:]
             emma_starter_target = path_topspin + user_directory + emma_starter_origin[2:]
-            deconv_starter_target = path_topspin + user_directory + deconv_starter_origin[2:]
+            deconv_starter_target = path_topspin + user_directory + deconv_starter_topspin[2:]
 
     
             # Setting up settings file data :

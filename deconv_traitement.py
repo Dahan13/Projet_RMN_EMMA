@@ -299,6 +299,3 @@ res = deconv(real, peaks, chosen_index).tolist()
 log("> Deconvolution Over !")
     
 return_spectrum(res)
-
-log("\n\n Points before deconv : " + str(real))
-log("\n\n Points after deconv : " + str(res))
