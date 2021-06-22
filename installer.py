@@ -324,12 +324,29 @@ class Step3(tk.Frame):
             new_deconv = open(deconv_origin[:(len(deconv_origin) - 3)] + "_transfert.py", 'w')
             new_deconv.writelines(lines)
             new_deconv.close()
+
+            # Preparing emma_traitement.py for transfer :
+            emma = open(emma_origin, 'r')
+            pattern = re.compile("path_to_documents.*")
+            lines = emma.readlines()
+            index = 0
+            for line in lines:
+                if pattern.match(line):
+                    break
+                else:
+                    index += 1
+            lines[index] = f"path_to_documents = \'{emma_directory}\'\n"
+            emma.close()
+            # We are making a copy of emma.py that we will copy after updating inside it's path to the settings doc
+            new_emma = open(emma_origin[:(len(emma_origin) - 3)] + "_transfert.py", 'w')
+            new_emma.writelines(lines)
+            new_emma.close()
     
             # Creating directory and moving files
             if not os.path.exists(emma_directory):
                 os.mkdir(emma_directory)
                 message2.set(str(message2.get()) + "EMMA directory created at : \'" + emma_directory + "\'\n")
-            shutil.copy(emma_origin, emma_target)
+            shutil.copy(emma_origin[:(len(emma_origin) - 3)] + "_transfert.py", emma_target)
             shutil.copy(deconv_origin[:(len(deconv_origin) - 3)] + "_transfert.py", deconv_target)
             message2.set(str(message2.get()) + "EMMA & Deconv processes successfully moved to : \'" + emma_directory + "\'\n")
             shutil.copy(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", emma_starter_target)

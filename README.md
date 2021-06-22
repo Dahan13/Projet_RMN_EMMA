@@ -58,7 +58,6 @@ Once the terminal is open, type :
 Be careful, depending on your installation, `python3` may have to be replaced by `py` for it to work.
 
 The program will start the installation, follow these instructions and everything should work fine. 
-There is also an alternative installer `installer_shell.py` which does not use a graphical interface but only the terminal.
 
 ###  1.2. <a name='Installationmanuelleduprogramme'></a> Manual installation of the program
 
@@ -68,15 +67,16 @@ This installation is compatible for all platforms, however we provide minimum su
 <br>
 <br>
 
-- Place `emma.py` in ...\Topspin_folder\exp\stan\nmr\py\user\
-- Move `emma_traitement.py` in a folder where you want it, this last one must not be in a secured directory of the machine, to avoid any risk, the  `Documents` folder is the best possible choice.
-- Update file paths `CPYTHON_BIN` and `CPYTHON_LIB` in `emma.py`, paying special attention to respect the / (for linux/Debian and MacOS) or \\ (for Windows users).
-You can open the file with notepad, some additional instructions are provided in `emma.py` (around line 33, after the `#` character)
+- Place `emma.py` and `deconv.py` in ...\Topspin_folder\exp\stan\nmr\py\user\, you should rename `deconv.py` to `emma_deconv.py`
+- Move `emma_traitement.py` and `deconv_traitement.py` in a folder where you want it, this last one must not be in a secured directory of the machine, to avoid any risk, the  `Documents` folder is the best possible choice.
+- Update file paths `CPYTHON_BIN` and `CPYTHON_LIB` in `emma.py`, `emma_deconv.py` paying special attention to respect the / (for linux/Debian and MacOS) or \\ (for Windows users).
+You can open the file with notepad, some additional instructions are provided in `emma.py` (around line 33, after the `#` character), instructions are identical for `emma_deconv.py`
 
 ###  1.3. <a name='Utilisationduprogramme'></a> How to use
-You have to open the spectrum in TopSpin, type the command `edpy` in the bottom left corner and run `emma.py` (or the command "xpy emma.py").
+You have to open the spectrum in TopSpin, type the command `edpy` in the bottom left corner and run `emma.py` (or the command "xpy emma.py") or
+`emma_deconv.py` depending of what you want.
 
-Follow the instructions of the program to save your Shape, then you can use it as you wish
+Follow the instructions of the programs.
 
 ##  2. <a name='Versionmanuelle'></a>Manual Program :
 
