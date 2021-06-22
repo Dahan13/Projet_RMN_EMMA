@@ -121,39 +121,31 @@ def main(real):
 def save_spectrum(real):
     # Asking for the name of the new spectrum
     SHOW_STATUS('Saving new spectrum')
-    parent_dataset = CURDATA()
-    expno = INPUT_DIALOG("Name of the new spectrum",
-    "Please choose the name for the deconvolved spectrum.\nThe name must be a number.",
-    ["Name of the deconvolved spectrum :"])[0]
-    while not isinstance(expno, int):
+    curdat = CURDATA()
+    user_input = INPUT_DIALOG("Save spectrum",
+    "Please choose where to save the deconvolved spectrum.\nPlease consider that any data there will be silently deleted.",
+    ["Dataset name :", "Expno :", "Procno :"], [curdat[0], curdat[1]])
+    dataset = [user_input[0], user_input[1], user_input[2]]
+    dataset.append(curdat[3])
+
+    while not (isinstance(dataset[1], int) and isinstance(dataset[2], int)):
         try:
-            expno = int(expno)
+            dataset[1] = int(dataset[1])
+            dataset[2] = int(dataset[2])
         except ValueError:
-            expno = INPUT_DIALOG("Name of the new spectrum",
-            "Please choose the name for the deconvolved spectrum.\nTHE NAME MUST BE A NUMBER.",
-            ["Name of the deconvolved spectrum :"])[0]
-    son_dataset = [parent_dataset[0], str(expno), parent_dataset[2], parent_dataset[3]]
+            user_input = INPUT_DIALOG("Save spectrum",
+            "Please choose where to save the deconvolved spectrum.\nPlease consider that any data there will be silently deleted.",
+            ["Dataset name :", "Expno :", "Procno :"], [curdat[0], curdat[1]])
+            dataset = [user_input[0], user_input[1], user_input[2]]
+            dataset.append(curdat[3])
 
-    # Saving the deconvolved spectrum
-    path_parent_1 = parent_dataset[3] + '/' + parent_dataset[0] + '/' + parent_dataset[1]
-    path_parent_2 = 'pdata/' + parent_dataset[2]
-    path_son_1 = parent_dataset[3] + '/' + parent_dataset[0] + '/' + str(expno)
-    
-    NEWDATASET(son_dataset, path_parent_1, path_parent_2)
+    dataset[1] = str(dataset[1])
+    dataset[2] = str(dataset[2])
 
-    # Warning, despite Topspin parameter copy, there is still missing files that we will handle
-    shutil.copy(path_parent_1 + '/acqu', path_son_1 + '/acqu')
-    shutil.copy(path_parent_1 + '/acqus', path_son_1 + '/acqus')
-    shutil.copy(path_parent_1 + '/' + path_parent_2 + '/procs', path_son_1 + '/' + path_parent_2 + '/procs') # This file was already copied by TopSpin, but it's broken so we redo it
-
-    # text = ""
-    # for i in range(len(real)):   
-    #     text += str(i) + " " + str(real[i]) + "\n"
-    # VIEWTEXT("GETPROCDATA Test", "Read Real Data", text)
-
-    RE(son_dataset)
+    WR(dataset)
+    RE(dataset)
     SAVE_ARRAY_AS_1R1I(real, None)
-    RE(son_dataset)
+    
 
     
 save_spectrum(main(retrieve_spectrum()))
