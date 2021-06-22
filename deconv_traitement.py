@@ -3,10 +3,16 @@ import numpy as np
 from math import isclose
 from math import pi
 from copy import copy
+import time
+
 start_log = False
+path_to_documents = None
+actual_time = time.struct_time(time.localtime())
 
 def log(message):
-    filename = "C:/Users/Lucas/Documents/EMMA/log_deconv.txt"
+    
+    """ This function will dynamically write logs"""
+    filename = path_to_documents + "deconv_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
     global start_log
     # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
     if start_log:
@@ -17,6 +23,7 @@ def log(message):
     f = open(filename, writing_status)
     f.write(str(message) + "\n")
     f.close()
+
 
 # Topspin communication functions
 
