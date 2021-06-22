@@ -9,7 +9,7 @@ from subprocess import Popen, PIPE
 # Utility functions
 
 # Don't touch the line below, it's meant for the windows installer, touching it with result in breaking the program for every system
-path_to_settings = None
+path_to_settings = 'C:/Users/lucas/Documents/EMMA/emma_settings.ini'
 ###############
 
 def export_settings():
@@ -33,12 +33,8 @@ def retrieve_spectrum():
 
     """ Export spectrum data """
     real = GETPROCDATA(-100000, 100000)
-    imaginary = GETPROCDATA(-100000, 100000, type = dataconst.PROCDATA_IMAG)
 
-    if imaginary is not None:
-        assert len(real) == len(imaginary), "Incorrect data, some real or imaginary numbers are missing"
-
-    return real, imaginary
+    return real
 
 # End utility functions
 #######################
@@ -54,7 +50,7 @@ def peaks_getter():
             peaks_positions.append(str(peak.getIntensity()))
         return peaks_positions
 
-def main((real, imaginary)):
+def main(real):
     peaks_positions = peaks_getter()
     # Now generating user interface
     # First, generating a better presentation for peak positions
@@ -106,30 +102,16 @@ def main((real, imaginary)):
     p.stdin.write(str(len(real)) + "\n")
     for r in real:
         p.stdin.write(str(r) + "\n")
-    if imaginary is not None:
-        p.stdin.write("imaginary\n")
-        for i in imaginary:
-            p.stdin.write(str(i) + "\n")
-    else:
-        p.stdin.write("no\n")
 
     SHOW_STATUS('deconvolve done. Processing deconvolved data')
     output, err = p.communicate()
     numbers = re.findall(r'.+\d+.+\d+\w.', output)
-
-    return numbers
-
-def save_spectrum(output):
-
-    # Separating real and imaginary list
     real = []
-    imaginary = []
+    for i in range(len(numbers)):
+        real.append(float(numbers[i]))
+    return real
 
-    output_str = output.strip('][').replace('(', '').replace(')', '').split(', ') # Separating all our value to compute
-    for i in range(0, len(output_str), 2):
-        real.append(float(output_str[i]))
-        imaginary.append(float(output_str[i+1]))
-
+def save_spectrum(real):
     # Asking for the name of the new spectrum
     SHOW_STATUS('Saving new spectrum')
     parent_dataset = CURDATA()
@@ -156,10 +138,13 @@ def save_spectrum(output):
     shutil.copy(path_parent_1 + '/acqu', path_son_1 + '/acqu')
     shutil.copy(path_parent_1 + '/acqus', path_son_1 + '/acqus')
     shutil.copy(path_parent_1 + '/' + path_parent_2 + '/procs', path_son_1 + '/' + path_parent_2 + '/procs') # This file was already copied by TopSpin, but it's broken so we redo it
-
+    text = ""
+    for i in range(len(real)):   
+        text += str(i) + " " + str(real[i]) + "\n"
+    VIEWTEXT("GETPROCDATA Test", "Read Real Data", text)
     RE(son_dataset)
-    SAVE_ARRAY_AS_1R1I(real, imaginary)
+    SAVE_ARRAY_AS_1R1I(real, None)
     RE(son_dataset)
 
     
-save_spectrum(main(retrieve_spectrum())[0])
+save_spectrum(main(retrieve_spectrum()))
