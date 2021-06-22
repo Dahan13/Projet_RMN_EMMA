@@ -51,7 +51,7 @@ def peaks_getter():
     else:
         peaks_positions = []
         for peak in list:
-            peaks_positions.append(str(peak.getPositions()[0]))
+            peaks_positions.append(str(peak.getIntensity()))
         return peaks_positions
 
 def main((real, imaginary)):
