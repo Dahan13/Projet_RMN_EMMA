@@ -19,8 +19,8 @@ except:
     on_windows = False
     if platform.system() == 'Darwin':
         messagebox.showwarning(title="Warning !", message="""
-                You are running on MacOS.
-                In order for this program to works, python will request aditionnal permissions.
+You are running on MacOS.
+In order for this program to works, python will request aditionnal permissions.
                 """)
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
@@ -218,9 +218,9 @@ class Step3(tk.Frame):
                 documents_path = get_documents_path()
             else:
                 messagebox.showwarning(title="Warning !", message="""
-                You are not on Windows.
-                Therefore, we will asks you to give us a directory to install the settings.
-                This directory must not be protected, we advise you a "Documents" or "Downloads" directory.
+You are not on Windows.
+Therefore, we will asks you to give us a directory to install the settings.
+This directory must not be protected, we advise you a "Documents" or "Downloads" directory.
                 """)
                 documents_path = filedialog.askdirectory(title="Settings installation directory")
                 if not documents_path or documents_path == "":
