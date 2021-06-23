@@ -26,40 +26,29 @@ def log(message):
         f.write(str(message) + "\n")
         f.close()
 
-
 # Topspin communication functions
 
-def retrieve_spectrum():
-    log("Retrieving spectrum from Topspin... ")
-    n = int(input(""))
-    log("length : " + str(n))
-    real = []
+def retrieve_data():
 
-    for i in range(n):
+    log("Retrieving peaks from Topspin...")
+    peaks_nb = int(input(""))
+    peaks_intensity = []
+    for i in range(peaks_nb):
+        value = float(input(""))
+        peaks_intensity.append(value)
+        log("peak " + str(i) + " : " + str(value))
+    chosen_peak = peaks_intensity.pop()
+    log("> Peaks OK !")
+
+    log("Retrieving spectrum from Topspin... ")
+    real_nb = int(input(""))
+    log("real length : " + str(real_nb))
+    real = []
+    for i in range(real_nb):
         value = float(input(""))
         real.append(value)
 
-    return np.array(real)
-
-def retrieve_peaks():
-    log("Retrieving peaks from Topspin...")
-    peaks_infos = sys.argv[1:][0] # First we take the list containing values
-    chosen_peak = float(sys.argv[2])
-
-    log("Chosen peak : " + str(chosen_peak))
-
-    if peaks_infos != '[]':
-        peaks_str = peaks_infos.strip('][').split(', ') # We convert the stringified list into a regular list
-        # We convert strings in the list into numbers, all results are in peaks list
-        peaks_values = []
-        for element in peaks_str:
-            peaks_values.append(float(element.strip("\'")))
-    else:
-        peaks_values = []
-    # peaks_values is the final list containing peaks other than the one to deconvolve, chosen_peak the one to deconvolve
-    log("Other peaks : " + str(peaks_values))
-    log("> Peaks OK !")
-    return peaks_values, chosen_peak
+    return peaks_intensity, chosen_peak, np.array(real)
 
 def return_spectrum(points):
 
@@ -188,7 +177,6 @@ def local_extrema(x_list, y_list, n):
 
     return peaks
 
-
 # Deconvolution functions
 
 def quality(y_list, y):
@@ -258,7 +246,7 @@ def optimized_mix(x_list, y_list, peak, ratio):
 
 def deconv(y_list, peaks, peak_index):
 
-    ratio = np.linspace(0, 1, 500)
+    ratio = np.linspace(0, 1, 100)
     x_list = np.array([i for i in range(len(real))])
 
     best_ratio = ratio[0]
@@ -277,8 +265,7 @@ def deconv(y_list, peaks, peak_index):
     return best_mix
 
 
-real = retrieve_spectrum()
-peaks_values, chosen_peak = retrieve_peaks()
+peaks_values, chosen_peak, real = retrieve_data()
 
 peaks_values.append(chosen_peak)
 peaks_values.sort()
