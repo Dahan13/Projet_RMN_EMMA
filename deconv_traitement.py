@@ -1,9 +1,9 @@
-import sys
 import numpy as np
 from math import isclose
 from math import pi
 from copy import copy
 import time
+import os
 
 start_log = False
 path_to_documents = None
@@ -14,6 +14,9 @@ def log(message):
     """ This function will dynamically write logs"""
 
     if path_to_documents != None:
+        # Ensuring that log folder exists
+        if not os.path.exists(path_to_documents + "log/"):
+            os.mkdir(path_to_documents + "log/")
         filename = path_to_documents + "log/"+ "deconv_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
         global start_log
         # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)

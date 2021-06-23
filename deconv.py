@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-import shutil
 from subprocess import Popen, PIPE
+import os
 
 if CURDATA() == None:
     MSG("Warning !\nPlease select a dataset.")
@@ -154,9 +154,18 @@ def save_spectrum(real):
     dataset[1] = str(dataset[1])
     dataset[2] = str(dataset[2])
 
+    if real == None or real == []:
+        MSG("Something went wrong with the data !\nPlease check the logs to see if everything went smoothly during processing.")
+        EXIT()
+
     WR(dataset)
     RE(dataset)
     SAVE_ARRAY_AS_1R1I(real, None)
+    # Deleting redundant peak file 
+    if os.path.exists(dataset[3] + "/" + dataset[0] + "/" + dataset[1] + "/pdata/" + dataset[2] + "/peaklist.xml"):
+        os.remove(dataset[3] + "/" + dataset[0] + "/" + dataset[1] + "/pdata/" + dataset[2] + "/peaklist.xml")
+        
+    RE(dataset)
     
 
     

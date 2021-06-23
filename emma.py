@@ -114,6 +114,10 @@ modulus = [float(i) / max(modulus) * 100. for i in modulus]
 
 phase = [(cmath.phase(i) * 180. / cmath.pi) % 360. for i in data]
 
+if phase == None or phase == [] or modulus == None or modulus == []:
+    MSG("Something went wrong with the data !\nPlease check the logs to see if everything went smoothly during processing.")
+    EXIT()
+
 shape_name = str(INPUT_DIALOG("EMMA", "Entrez le nom de la shape a enregistrer", ["Name = "], ["Shape"], ["",""], ["1", "1"])[0])
 SAVE_SHAPE(str(shape_name), str(shape_name), modulus, phase)
 MSG("Shape saved under the name : " + shape_name)

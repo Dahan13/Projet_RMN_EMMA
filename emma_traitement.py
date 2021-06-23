@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-import re
+import os
 import numpy as np
 from scipy.signal import hilbert
-import cmath
-import math
 import time
 
 start_log = False
@@ -17,6 +14,9 @@ def log(message):
     """ This function will dynamically write logs"""
 
     if path_to_documents != None:
+        # Ensuring that log folder exists
+        if not os.path.exists(path_to_documents + "log/"):
+            os.mkdir(path_to_documents + "log/")
         filename = path_to_documents + "log/" + "emma_" + str(actual_time[2]) + "_" + str(actual_time[1]) + "_" + str(actual_time[0]) + "_" + str(actual_time[3]) + "h" + str(actual_time[4]) + "m" + str(actual_time[5]) + "s" + "_log.txt"
         global start_log
         # This is to obtain some values to see if the program executed as intended (only use absolute path or TopSpin put the log in an unknown place)
