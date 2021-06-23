@@ -8,10 +8,23 @@ import tkinter.messagebox as messagebox
 import os
 import sys
 import shutil
-import ctypes.wintypes
 import configparser
 import platform
 import re
+
+on_windows = True
+try:
+    import ctypes.wintypes
+except:
+    on_windows = False
+    if platform.system() == 'Darwin':
+        messagebox.showwarning(title="Warning !", message="""
+You are running on MacOS.
+In order for this program to works, python will request aditionnal permissions.
+                """)
+        os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+
+
 
 path_topspin = ""
 
@@ -168,7 +181,7 @@ class Step2(tk.Frame):
         global message
         global path_topspin
         path_topspin = filedialog.askdirectory(title="Specify TopSpin's main folder")
-        while  not os.path.exists(path_topspin + "/topspin.cmd") and path_topspin != "":
+        while (on_windows and not os.path.exists(path_topspin + "/topspin.cmd") or not on_windows and not os.path.exists(path_topspin + "/exp/")) and path_topspin != "":
             messagebox.showwarning(title="Warning !", message="This is not TopSpin's main directory.\nLook for the directory where topspin.cmd is located !")
             path_topspin = filedialog.askdirectory(title="Specify TopSpin's main folder")
         message.set(path_topspin)
@@ -200,7 +213,18 @@ class Step3(tk.Frame):
     def install(self):
         global path_topspin
         # Checking if given path to TopSpin directory was correct
-        if os.path.exists(path_topspin + "/topspin.cmd"):
+        if (on_windows and os.path.exists(path_topspin + "/topspin.cmd") or not on_windows and os.path.exists(path_topspin + "/exp")) and path_topspin != "":
+            if on_windows:
+                documents_path = get_documents_path()
+            else:
+                messagebox.showwarning(title="Warning !", message="""
+You are not on Windows.
+Therefore, we will asks you to give us a directory to install the settings.
+This directory must not be protected, we advise you a "Documents" or "Downloads" directory.
+                """)
+                documents_path = filedialog.askdirectory(title="Settings installation directory")
+                if not documents_path or documents_path == "":
+                    return
             self.install_button.pack_forget()
             global message2
         
@@ -208,18 +232,25 @@ class Step3(tk.Frame):
             # Source
             user_directory = r"/exp/stan/nmr/py/user/"
             emma_starter_origin = r"./emma.py"
+            deconv_starter_origin = r"./deconv.py"
+            deconv_starter_topspin = r"./emma_deconv.py"
             emma_origin = r"./emma_traitement.py"
-            documents_path = get_documents_path()
+            deconv_origin = r"./deconv_traitement.py"
 
             message2.set("Topspin directory set to : \'" + path_topspin + "\'\n")
 
-            python_path = (os.path.dirname(sys.executable) + "\python.exe").replace("/", "\\")
+            if on_windows:
+                python_path = (os.path.dirname(sys.executable) + "\python.exe").replace("/", "\\")
+            else:
+                python_path = (os.path.dirname(sys.executable) + "/python3").replace("\\", "/")
             message2.set(str(message2.get()) + "\nPython path set to : \'" + python_path + "\'\n\n")
 
             # Create path
             emma_directory = (documents_path + '/EMMA/').replace("\\", "/")
             emma_target = emma_directory + emma_origin[2:]
+            deconv_target = emma_directory + deconv_origin[2:]
             emma_starter_target = path_topspin + user_directory + emma_starter_origin[2:]
+            deconv_starter_target = path_topspin + user_directory + deconv_starter_topspin[2:]
 
     
             # Setting up settings file data :
@@ -238,7 +269,8 @@ class Step3(tk.Frame):
             config.set('PATHS', 'emma_directory', str(emma_directory))
             config.set('PATHS', 'emma_starter', str(emma_starter_target))
             config.set('PATHS', 'emma_process', str(emma_target))
-            config.set('PATHS', 'system32', str(get_system32_location()))
+            if on_windows:
+                config.set('PATHS', 'system32', str(get_system32_location()))
 
     
             # Preparing emma.py for transfer :
@@ -259,15 +291,73 @@ class Step3(tk.Frame):
             new_emma.writelines(lines)
             new_emma.close()
 
+            # Preparing deconv.py for transfer :
+            deconv = open(deconv_starter_origin, 'r')
+            pattern = re.compile("path_to_settings.*")
+            lines = deconv.readlines()
+            index = 0
+            for line in lines:
+                if pattern.match(line):
+                    break
+                else:
+                    index += 1
+            lines[index] = f"path_to_settings = \'{emma_directory + 'emma_settings.ini'}\'\n"
+            deconv.close()
+            # We are making a copy of emma.py that we will copy after updating inside it's path to the settings doc
+            new_deconv = open(deconv_starter_origin[:(len(deconv_starter_origin) - 3)] + "_transfert.py", 'w')
+            new_deconv.writelines(lines)
+            new_deconv.close()
+
+            # Preparing deconv_traitement.py for transfer :
+            deconv = open(deconv_origin, 'r')
+            pattern = re.compile("path_to_documents.*")
+            lines = deconv.readlines()
+            index = 0
+            for line in lines:
+                if pattern.match(line):
+                    break
+                else:
+                    index += 1
+            lines[index] = f"path_to_documents = \'{emma_directory}\'\n"
+            deconv.close()
+            # We are making a copy of emma.py that we will copy after updating inside it's path to the settings doc
+            new_deconv = open(deconv_origin[:(len(deconv_origin) - 3)] + "_transfert.py", 'w')
+            new_deconv.writelines(lines)
+            new_deconv.close()
+
+            # Preparing emma_traitement.py for transfer :
+            emma = open(emma_origin, 'r')
+            pattern = re.compile("path_to_documents.*")
+            lines = emma.readlines()
+            index = 0
+            for line in lines:
+                if pattern.match(line):
+                    break
+                else:
+                    index += 1
+            lines[index] = f"path_to_documents = \'{emma_directory}\'\n"
+            emma.close()
+            # We are making a copy of emma.py that we will copy after updating inside it's path to the settings doc
+            new_emma = open(emma_origin[:(len(emma_origin) - 3)] + "_transfert.py", 'w')
+            new_emma.writelines(lines)
+            new_emma.close()
     
             # Creating directory and moving files
             if not os.path.exists(emma_directory):
                 os.mkdir(emma_directory)
+
+            if not os.path.exists(emma_directory + "log/"):
+                os.mkdir(emma_directory + "log/")
                 message2.set(str(message2.get()) + "EMMA directory created at : \'" + emma_directory + "\'\n")
-            shutil.copy(emma_origin, emma_target)
-            message2.set(str(message2.get()) + "EMMA process successfully moved to : \'" + emma_target + "\'\n")
+
+            shutil.copy(emma_origin[:(len(emma_origin) - 3)] + "_transfert.py", emma_target)
+            shutil.copy(deconv_origin[:(len(deconv_origin) - 3)] + "_transfert.py", deconv_target)
+            message2.set(str(message2.get()) + "EMMA & Deconv processes successfully moved to : \'" + emma_directory + "\'\n")
             shutil.copy(emma_starter_origin[:(len(emma_starter_origin) - 3)] + "_transfert.py", emma_starter_target)
-            message2.set(str(message2.get()) + "EMMA starter successfully moved to : \'" + emma_starter_target + "\'\n")
+            message2.set(str(message2.get()) + "EMMA successfully moved to : \'" + emma_starter_target + "\'\n")
+            shutil.copy(deconv_starter_origin[:(len(deconv_starter_origin) - 3)] + "_transfert.py", deconv_starter_target)
+            message2.set(str(message2.get()) + "DECONV successfully moved to : \'" + deconv_starter_target + "\'\n")
+            
             f = open(f"{emma_directory}emma_settings.ini", "w")
             config.write(f)
             f.close()
