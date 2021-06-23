@@ -49,13 +49,15 @@ def peaks_getter():
         MSG("no peaks file found, do 'pp' first") 
         EXIT()
     else:
-        peaks_positions = []
+        peaks_intensity = []
         for peak in list:
-            peaks_positions.append(str(peak.getIntensity()))
-        return peaks_positions
+            peaks_intensity.append(str(peak.getIntensity()))
+        return peaks_intensity
 
-def main(real):
-    peaks_positions = peaks_getter()
+def main():
+    real = retrieve_spectrum()
+    peaks_intensity = peaks_getter()
+
     # Now generating user interface
     # First, generating a better presentation for peak positions
     peaks_str = ""
@@ -64,7 +66,9 @@ def main(real):
         peaks_indicators.append(str(peak.getPositions()[0]))
     for i in range(len(peaks_indicators)):
         peaks_str += str(i + 1) + ": " + str(peaks_indicators[i]) + ",\n"
+    
     # Inputing
+
     result = INPUT_DIALOG("Choose the peak to deconvolve.",
     "Here is peak positions (ppm) given by TopSpin :\n\n" + peaks_str + "\nEnter the position of the peak you want to deconvolve\n(e.g : 1 to deconvolve the first one).",
     ["Position in the list"])[0]
@@ -72,7 +76,7 @@ def main(real):
     while not isinstance(result, int):
         try:
             result = int(result)
-            if result < 1 or result > len(peaks_positions):
+            if result < 1 or result > len(peaks_intensity):
                 result = INPUT_DIALOG("Choose the peak to deconvolve.",
                 "Here is peak positions (ppm) given by TopSpin :\n\n" + peaks_str + "\nEnter the position of the peak you want to deconvolve\nPlease make sure you are entering a valid number !",
                 ["Position in the list"])[0]
@@ -80,9 +84,12 @@ def main(real):
             result = INPUT_DIALOG("Choose the peak to deconvolve.",
             "Here is peak positions (ppm) given by TopSpin :\n\n" + peaks_str + "\nEnter the position of the peak you want to deconvolve\nPlease make sure you are entering a valid number !",
             ["Position in the list"])[0]
-    chosen_peak = peaks_positions[result - 1]
-    del peaks_positions[result - 1]
+
+    chosen_peak = peaks_intensity[result - 1]
+    del peaks_intensity[result - 1]
     
+
+
     paths = export_settings()
 
     FILE = "deconv_traitement.py"
@@ -95,7 +102,7 @@ def main(real):
         CPYTHON_LIB = paths["emma_directory"]
 
     CPYTHON_FILE = CPYTHON_LIB + FILE
-    COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE, str(peaks_positions), str(chosen_peak)]
+    COMMAND_LINE = [CPYTHON_BIN, CPYTHON_FILE]
     
     COMMAND_LINE = " ".join(str(elm) for elm in COMMAND_LINE)
     
@@ -105,13 +112,18 @@ def main(real):
     else:
         p = Popen(COMMAND_LINE, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     
-    SHOW_STATUS('deconvolve in progress.')
+    SHOW_STATUS('sending data to deconvolve program.')
+    p.stdin.write(str(len(peaks_intensity) + 1) + "\n")
+    for peak in peaks_intensity:
+        p.stdin.write(str(peak) + "\n")
+    p.stdin.write(str(chosen_peak) + "\n")
+    
     p.stdin.write(str(len(real)) + "\n")
     for r in real:
         p.stdin.write(str(r) + "\n")
-
-    SHOW_STATUS('deconvolve done. Processing deconvolved data')
+    SHOW_STATUS('deconvolve in progress.')
     output, err = p.communicate()
+    SHOW_STATUS('deconvolve done. Processing deconvolved data')
     numbers = re.findall(r'.+\d+.+\d+\w.', output)
     real = []
     for i in range(len(numbers)):
@@ -148,4 +160,4 @@ def save_spectrum(real):
     
 
     
-save_spectrum(main(retrieve_spectrum()))
+save_spectrum(main())
