@@ -6,7 +6,7 @@ import time
 import os
 
 start_log = False
-path_to_documents = None
+path_to_documents = 'C:/Users/lucas/Documents/EMMA/'
 actual_time = time.struct_time(time.localtime())
 
 def log(message):
@@ -96,7 +96,7 @@ class Peak:
         self.width = abs((i - width) * 2)
 
 def find_peak_index(peak, real):
-    real_copy = copy(real)
+    real_copy = smooth(copy(real))
     found = False
     peak = peak * np.max(real) / 10.
 
@@ -185,7 +185,7 @@ def local_extrema(x_list, y_list, n):
 def quality(y_list, y):
     
     "lower is better"
-    quality_factor = np.sum(abs((y_list - y)))
+    quality_factor = np.sum(np.square((y_list - y) * (y ** 1.5)))
 
     return quality_factor
 
