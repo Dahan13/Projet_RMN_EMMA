@@ -1,4 +1,4 @@
-try:
+try: # Ensuring that tkinter is installed
     import tkinter as tk
 except ImportError:
     raise ImportError("\n\nWarning !\nTkinter python library is not installed !\nFor Windows users, your python interpreter version is wrong/broken.\nFor Mac/Linux/Debian users, type \'sudo apt-get install python3-tk\' in a terminal.")
@@ -12,19 +12,29 @@ import configparser
 import platform
 import re
 
-on_windows = True
-try:
+def is_windows() -> bool:
+    """ This function will find the OS by sending a boolean """
+    if platform.system().lower() == 'windows':
+        return True
+    else:
+        return False
+
+on_windows = is_windows()
+
+try: # Checking if wintypes module is installed
     import ctypes.wintypes
 except:
-    on_windows = False
-    if platform.system() == 'Darwin':
-        messagebox.showwarning(title="Warning !", message="""
+    if on_windows:
+        raise ImportError("Wintypes module was not found")
+
+
+
+if not on_windows and platform.system().lower() == 'darwin':
+    messagebox.showwarning(title="Warning !", message="""
 You are running on MacOS.
 In order for this program to works, python will request aditionnal permissions.
                 """)
-        os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
-
-
+    os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
 path_topspin = ""
 
@@ -37,8 +47,9 @@ def get_documents_path() -> str:
     ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
     return buf.value
 
+
 def get_system32_location() -> str:
-    """This function give the path to system32 folder"""
+    """ This function give the path to system32 folder """
     is_wow64 = (platform.architecture()[0] == '32bit' and 'ProgramFiles(x86)' in os.environ)
     system32 = os.path.join(os.environ['SystemRoot'], 'SysNative' if is_wow64 else 'System32')
     return system32.replace("\\", "/")
@@ -162,7 +173,8 @@ class Step2(tk.Frame):
 
         content1 = tk.Label(self, text="""
     The installer needs to install a file in the TopSpin software folders.
-    Please point to the main TopSpin folder, where topspin.cmd is located.
+    Please point to the main TopSpin folder, where the `exp` folder is located.
+    If you are on MacOS, don't forget to use the `Command + Shift + . (period)` shortcut.
         """, font = parent.reg_font, justify = "left")
         content1.pack()
 
@@ -181,8 +193,8 @@ class Step2(tk.Frame):
         global message
         global path_topspin
         path_topspin = filedialog.askdirectory(title="Specify TopSpin's main folder")
-        while (on_windows and not os.path.exists(path_topspin + "/topspin.cmd") or not on_windows and not os.path.exists(path_topspin + "/exp/")) and path_topspin != "":
-            messagebox.showwarning(title="Warning !", message="This is not TopSpin's main directory.\nLook for the directory where topspin.cmd is located !")
+        while not os.path.exists(path_topspin + "/exp/") and path_topspin != "":
+            messagebox.showwarning(title="Warning !", message="This is not TopSpin's main directory.\nLook for the directory where `exp` folder is located !")
             path_topspin = filedialog.askdirectory(title="Specify TopSpin's main folder")
         message.set(path_topspin)
 
@@ -213,7 +225,7 @@ class Step3(tk.Frame):
     def install(self):
         global path_topspin
         # Checking if given path to TopSpin directory was correct
-        if (on_windows and os.path.exists(path_topspin + "/topspin.cmd") or not on_windows and os.path.exists(path_topspin + "/exp")) and path_topspin != "":
+        if os.path.exists(path_topspin + "/exp") and path_topspin != "":
             if on_windows:
                 documents_path = get_documents_path()
             else:
